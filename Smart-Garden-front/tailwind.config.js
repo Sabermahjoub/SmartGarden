@@ -4,7 +4,13 @@ module.exports = {
     "./src/**/*.{html,ts}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        // Add your custom color here
+        lightGreen: '#6E8A61', 
+        darkGreen : '#20350C'
+      },
+    },
   },
   plugins: [],
 }
