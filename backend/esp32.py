@@ -1,7 +1,7 @@
 import network
 import time
 import ujson
-from machine import Pin, SoftI2C
+from machine import Pin, SoftI2C, ADC
 from i2c_lcd import I2cLcd
 import dht
 from umqtt.simple import MQTTClient
@@ -44,6 +44,10 @@ lcd.putstr(chr(0) + " Domotique " + chr(0))
 # DHT11 sensor
 sensor = dht.DHT11(Pin(15))
 
+# Photoresistor (LDR) on Pin 34
+ldr = ADC(Pin(34))
+ldr.atten(ADC.ATTN_11DB)  # Range 0-3.3V
+
 # Main loop
 while True:
     lcd.clear()
@@ -55,20 +59,31 @@ while True:
     temperature = sensor.temperature()
     humidity = sensor.humidity()
 
+    # Read light intensity from LDR
+    light_intensity = ldr.read()  # Value between 0 and 4095
+    light_percentage = (light_intensity / 4095) * 100  # Convert to percentage
+
     # Print to console
     print(f"Temperature: {temperature} Celsius")
     print(f"Humidity: {humidity} %")
+    print(f"Light Intensity: {light_percentage:.2f} %")
 
-    # Display on LCD
+    # Display temperature and humidity on LCD
     lcd.putstr(f" Temp : {temperature} C")
     lcd.move_to(0, 1)
     lcd.putstr(f" Humidity: {humidity} %")
     time.sleep(1)
-    
+
+    # Display light intensity as percentage on LCD
+    lcd.clear()
+    lcd.putstr(f"Light: {light_percentage:.2f} %")
+    time.sleep(1)
+
     # Publish MQTT message
     message = ujson.dumps({
         "temp": temperature,
-        "humidity": humidity
+        "humidity": humidity,
+        "light_percentage": light_percentage
     })
     client.publish("domotique", message)
     
