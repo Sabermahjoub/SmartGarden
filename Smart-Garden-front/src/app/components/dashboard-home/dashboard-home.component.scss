@@ -1,0 +1,77 @@
+.blur-box {
+    background-color: rgba(255, 255, 255, 0.1); /* Light color with transparency */
+    backdrop-filter: blur(8px); /* Adjust the blur intensity */
+    border-radius: 10px; /* Rounded corners to match the style */
+    padding: 10px;
+    display: flex;
+    //justify-content: center;
+    //align-items: center;
+    color: white; /* Text color to make sure it's readable on the blurred background */
+}
+
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24,
+}
+
+::ng-deep .mat-progress-bar-fill::after {
+  background-color: darkGreen;
+}
+
+::ng-deep .mat-progress-bar-buffer {
+  background: #b1b1b1;
+}
+
+::ng-deep .mat-progress-bar {
+  border-radius: 2px;
+}
+
+.task {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f7f7f7;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+.circle {
+  width: 24px;
+  height: 24px;
+  border: 2px solid gray;
+  border-radius: 50%;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.circle.checked {
+  background-color: #28a745; /* Green background when checked */
+  border-color: #28a745;
+}
+
+.circle .material-icons {
+  color: white;
+  font-size: 18px;
+}
+
+.task-title {
+  font-weight: bold;
+  color: #333;
+}
+
+::ng-deep .custom-style {
+  background-color: rgb(119, 240, 119);
+  color: white;
+  margin-top: 0;
+}
+::ng-deep .mat-simple-snackbar-action > button {
+  color: white;
+}
