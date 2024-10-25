@@ -10,11 +10,21 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; // Import the MatSpinnerModule
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { DashboardHomeComponent } from './components/dashboard-home/dashboard-home.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatCardModule } from '@angular/material/card';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { NgChartsModule } from 'ng2-charts'; 
+import { NgxGaugeModule } from 'ngx-gauge';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import {MatBadgeModule} from '@angular/material/badge';
+
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
+    DashboardHomeComponent
   ],
   imports: [
     BrowserModule,
@@ -25,7 +35,14 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; /
     MatIconModule,
     MatButtonModule,
     ReactiveFormsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatSidenavModule,
+    MatCardModule,
+    MatProgressBarModule,
+    NgChartsModule,
+    NgxGaugeModule,
+    MatSnackBarModule,
+    MatBadgeModule
   ],
   providers: [],
   bootstrap: [AppComponent]
