@@ -19,6 +19,7 @@ import { NgChartsModule } from 'ng2-charts';
 import { NgxGaugeModule } from 'ngx-gauge';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {MatBadgeModule} from '@angular/material/badge';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import {MatBadgeModule} from '@angular/material/badge';
     NgChartsModule,
     NgxGaugeModule,
     MatSnackBarModule,
-    MatBadgeModule
+    MatBadgeModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -18,15 +18,15 @@
   'opsz' 24,
 }
 
-::ng-deep .mat-progress-bar-fill::after {
+::ng-deep .custom-progress-bar .mat-progress-bar-fill::after {
   background-color: darkGreen;
 }
 
-::ng-deep .mat-progress-bar-buffer {
+::ng-deep .custom-progress-bar .mat-progress-bar-buffer {
   background: #b1b1b1;
 }
 
-::ng-deep .mat-progress-bar {
+::ng-deep .custom-progress-bar .mat-progress-bar {
   border-radius: 2px;
 }
 
@@ -67,10 +67,24 @@
   color: #333;
 }
 
+::ng-deep .mat-snack-bar-container {
+  top: 0 !important;
+  margin-top: 0 !important;
+  color: white;
+}
+
+::ng-deep .custom-orange-style {
+  background-color: rgb(194, 119, 20);
+  font-weight: bold;
+}
+
+::ng-deep .custom-red-style {
+  background-color: rgb(161, 21, 21);
+  font-weight: bold;
+}
+
 ::ng-deep .custom-style {
   background-color: rgb(119, 240, 119);
-  color: white;
-  margin-top: 0;
 }
 ::ng-deep .mat-simple-snackbar-action > button {
   color: white;
