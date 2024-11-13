@@ -20,12 +20,16 @@ import { NgxGaugeModule } from 'ngx-gauge';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {MatBadgeModule} from '@angular/material/badge';
 import { HttpClientModule } from '@angular/common/http';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { LogsComponent } from './components/logs/logs.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    DashboardHomeComponent
+    DashboardHomeComponent,
+    DashboardComponent,
+    LogsComponent
   ],
   imports: [
     BrowserModule,
