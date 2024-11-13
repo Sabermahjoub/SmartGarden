@@ -1,0 +1,105 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;700&display=swap" />
+
+<div class="bg-customGrey p-0 min-h-screen w-full h-full">
+
+    <!-- Upper container (notifcation + logo)-->
+    <div class="flex justify-center items-center w-full h-[10%]">
+
+        <!-- logo -->
+        <div class="w-[30%] flex justify-center items-center">
+            <img src="/assets/images/logo.png" alt="Logo" class="h-12 md:h-16">                
+            <span class="p-0 font-bold text-lg md:text-xl text-black ml-2">My SmartGarden Monitoring</span>
+        </div>
+
+        <div class="h-full flex w-[90%]">
+
+            <div class="h-full flex justify-center items-center p-2 w-[30%] ml-auto">
+                <div class="bg-darkGrey flex w-[50%] rounded-md h-[60%] ml-auto">
+                    <div class="h-full w-[20%] bg-lime-500 flex justify-center items-center">
+                        <mat-icon matBadge="3" matBadgeColor="warn">notifications_none</mat-icon>
+                    </div>
+                    <div class="w-[80%] h-full flex items-center justify-center">
+                        <span class="text-base">Alerts</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+    <div class="flex justify-center items-center h-[90%] w-full">
+
+        <mat-drawer-container class="w-full h-full" autosize>
+
+            <!-- Drawer (on the left)-->
+            <mat-drawer #drawer class="w-[9%] bg-customGrey" mode="side" opened="true">
+                <div class="flex flex-col items-center h-full justify-center">
+                    <div class="flex p-2 w-[80%] flex-col h-full gap-2">
+
+                        <div class="bg-darkGrey rounded-md flex justify-center items-center h-[30%] w-full bg-cover bg-center" style="background-image: url('/assets/images/small_plant2.png');">
+
+                        </div>
+                        <!--div class="flex-grow"></!--div-->
+
+                        <div class="flex mt-auto flex-col gap-2 h-[67%]">
+                            <button (click)="openHome()" mat-flat-button [ngClass]="{'bg-lime-500' : step==='dashboard-home', 'bg-darkGreen': step !== 'dashboard-home'}" class="rounded-sm p-0">
+                                <span class="material-icons">
+                                    home
+                                </span>
+                            </button>
+
+                            <button mat-flat-button class="!bg-darkGreen rounded-sm p-0">
+                                <span class="material-symbols-outlined">
+                                    network_node
+                                </span>
+                            </button>
+
+                            <button (click)="openLogs()" mat-flat-button [ngClass]="{'bg-lime-500' : step==='logs', 'bg-darkGreen': step !== 'logs'}" class="rounded-sm p-0">
+                                <span class="material-symbols-outlined">
+                                    compost
+                                </span>
+                            </button>
+
+                            <div class="flex w-full mt-16">
+                                <span (click)="drawer.toggle()" class="cursor-pointer ml-auto material-symbols-outlined text-gray-700">
+                                    arrow_back_ios
+                                </span>
+                            </div>
+                            <div class="flex-grow"></div>
+
+                            <button mat-flat-button class="!bg-darkGreen mt-auto flex justify-end items-end rounded-sm p-0">
+                                <span class="material-symbols-outlined">
+                                    logout
+                                </span>
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </mat-drawer>
+
+            <div class="relative flex flex-col h-full w-full">
+                <div class="h-full w-full" [ngSwitch]="step">
+                    <app-dashboard-home
+                        *ngSwitchCase="'dashboard-home'"
+                        class="h-full w-full"
+                    >
+                    </app-dashboard-home>
+            
+                    <app-logs
+                        *ngSwitchCase="'logs'"
+                        class="h-full w-full"
+                    >
+                    </app-logs>
+                </div>
+            </div>
+
+        </mat-drawer-container>
+    </div>
