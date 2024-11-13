@@ -155,35 +155,57 @@
                     <!-- Time && Location -->
                     <div class="bg-lightGreen flex justify-center items-center rounded-md h-full w-[35%]" >
                         <!-- Location && Date-->
-                        <div class="flex w-[45%] flex-col justify-center items-center gap-6">
-                            <div class="flex justify-center items-center">
+                        <div class="flex w-[50%] flex-col justify-center items-center gap-6">
+                            <div class="w-full flex justify-center items-center">
                                 <span class="flex justify-center items-center">
                                     <mat-icon>location_on</mat-icon>
-                                    Firma X, Bizerte, Tunisie
+                                    Tunis
                                 </span>
                             </div>
 
-                            <div class="flex justify-center items-center">
-                                <span class="flex justify-center items-center">
-                                    <mat-icon>today</mat-icon>
-                                    Tue, 10 November 2024
+                            <!-- Today's date -->
+                            <div class="w-full flex justify-center items-center">
+                                <span class="w-[90%] flex gap-1 justify-center items-center">
+                                    <mat-icon class="left-0 w-[10%]">today</mat-icon>
+                                    <!--div *ngIf="currentDate === ''" class="w-full h-full">
+                                        <mat-progress-bar  class="custom-progress-bar" mode="indeterminate"></mat-progress-bar>
+                                    </div-->
+                                    <div class="w-full flex">
+                                        <mat-spinner *ngIf="formattedDate === ''" color="accent" diameter="20"></mat-spinner>
+                                        <span *ngIf="formattedDate !== ''" class="flex w-full">{{formattedDate}}</span>
+                                    </div>
                                 </span>
                             </div>
 
-                            <div class="flex gap-4">
-                                <div class="flex justify-center items-center">
-                                    <mat-icon>arrow_upward</mat-icon>
-                                    <span>H : 32°C</span>
-                                </div>
+                            <div class="flex w-full ml-6 gap-4">
                                 <div class="flex justify-center items-center">
                                     <mat-icon>arrow_downward</mat-icon>
-                                    <span>L : 18°C</span>
+                                    <div class="w-[90%] flex">
+                                        <mat-spinner *ngIf="weatherApiData.minTemperature === null" color="accent" diameter="20"></mat-spinner>
+                                        <span *ngIf="weatherApiData.minTemperature !== null" class="flex w-full">L : {{weatherApiData.minTemperature}}°C</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-center items-center">
+                                    <mat-icon>arrow_upward</mat-icon>
+                                    <div class="w-[90%] flex">
+                                        <mat-spinner *ngIf="weatherApiData.maxTemperature === null" color="accent" diameter="20"></mat-spinner>
+                                        <span *ngIf="weatherApiData.maxTemperature !== null" class="flex w-full">H : {{weatherApiData.maxTemperature}}°C</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Hour -->
-                        <div class="flex justify-center items-center w-[50%]"><span class="text-7xl">09:30</span></div>
+                        <div class="flex flex-col gap-1 justify-center items-center h-full w-[50%]">
+                            <div class="flex justify-center items-center">
+                                <mat-spinner *ngIf="formattedTime === ''" color="accent" diameter="50"></mat-spinner>
+                                <span *ngIf="formattedTime !== ''" class="text-7xl">{{formattedTime}}</span>
+                            </div>
+                            <div [ngClass]="{'invisible': weatherApiData.description === null}" class="w-full mt-4 flex justify-center items-center">
+                                <mat-icon>rain</mat-icon>
+                                <span  *ngIf="weatherApiData.description !== null">{{weatherApiData.description}}</span>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
@@ -247,7 +269,10 @@
                                         </div>
                                     </div>
                                     <div class="h-[50%] w-full p-2 flex justify-center items-center">
-                                        <span><span class="text-7xl"><b>25</b></span><span class="text-lime-500 text-4xl">Km/h</span></span>
+                                        <div *ngIf="weatherApiData.windspeed === null">
+                                            <mat-spinner color="accent" diameter="50"></mat-spinner>
+                                        </div>
+                                        <span *ngIf="weatherApiData.windspeed !== null"><span class="text-7xl"><b>{{weatherApiData.windspeed}}</b></span><span class="text-lime-500 text-4xl">Km/h</span></span>
                                     </div>
                                 </div>
                             </div>
@@ -257,9 +282,9 @@
 
                                 <!-- UV index -->
                                 <div class="blur-box h-full w-full flex flex-col gap-2">
-                                    <!-- Logo and metric name-->
+                                    <!-- Icon and metric name-->
                                     <div class="h-[20%] w-full">
-                                        <!-- Logo -->
+                                        <!-- Icon -->
                                         <div class="flex">
                                             <div class="flex justify-center items-center">
                                                 <span class="text-lime-500 text-5xl material-symbols-outlined" style="font-size: 40px;">
@@ -273,19 +298,11 @@
 
                                     </div>
                                     <div class="h-[50%] w-full p-2 flex justify-center items-center">
-                                        <span class="text-7xl"><b>4</b></span>
+                                        <div *ngIf="weatherApiData.uvindex === null">
+                                            <mat-spinner color="accent" diameter="50"></mat-spinner>
+                                        </div>
+                                        <span *ngIf="weatherApiData.uvindex !== null" class="text-7xl"><b>{{weatherApiData.uvindex}}</b></span>
                                     </div>
-                                    <!--div class=" h-[20%] w-full p-2 flex justify-center items-center">
-                                        <ngx-gauge [ngStyle]="{'width': '50px', 'height': '50px'}" class="" [value]="4" [max]="10" [min]="0" [type]="'full'"></ngx-gauge>
-                                        <canvas baseChart
-                                            [labels]="doughnutChartLabels"
-                                            [datasets]="doughnutChartDatasets"
-                                            [options]="doughnutChartOptions"
-                                            [legend]="false"
-                                            [type]="'doughnut'"
-                                            style="width: 50px; height: 50px;">
-                                        </canvas>
-                                    </!--div-->
                                 </div>
 
                                 <!-- Soil Moisture -->
