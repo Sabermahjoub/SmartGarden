@@ -6,6 +6,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { DateHourTempService } from 'src/app/services/date-hour-temp.service';
 import { WeatherApiData } from 'src/app/models/weather_data';
 import { DatePipe } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { CreateTaskComponent } from '../create-task/create-task.component';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -19,7 +21,8 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   constructor(
     private snackBar: MatSnackBar,
     private dateService : DateHourTempService,
-    private datePipe : DatePipe
+    private datePipe : DatePipe,
+    private dialog : MatDialog
   ) { 
   }
 
@@ -132,6 +135,19 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
       }
     );
   }
+
+  openCreateTaskComponent() {
+    this.dialog.open(CreateTaskComponent, {
+      // data: row,
+      height: '90%',
+      minHeight: '450px',
+      minWidth: '750px',
+      width: '50%',
+      data: 'create-task',
+      panelClass: 'custom-dialog-container',
+      // minHeight: '180px',
+    });
+  };
   
   public doughnutChartLabels: string[] = [];
   public doughnutChartDatasets: ChartConfiguration<'doughnut'>['data']['datasets'] = [

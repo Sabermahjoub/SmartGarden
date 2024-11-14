@@ -22,14 +22,18 @@ import {MatBadgeModule} from '@angular/material/badge';
 import { HttpClientModule } from '@angular/common/http';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LogsComponent } from './components/logs/logs.component';
-
+import { CreateTaskComponent } from './components/create-task/create-task.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { MatChipsModule } from '@angular/material/chips'; 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     DashboardHomeComponent,
     DashboardComponent,
-    LogsComponent
+    LogsComponent,
+    CreateTaskComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +52,10 @@ import { LogsComponent } from './components/logs/logs.component';
     NgxGaugeModule,
     MatSnackBarModule,
     MatBadgeModule,
-    HttpClientModule
+    HttpClientModule,
+    MatDialogModule,
+    MatSelectModule,
+    MatChipsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

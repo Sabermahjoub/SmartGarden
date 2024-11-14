@@ -9,6 +9,11 @@
     color: white; /* Text color to make sure it's readable on the blurred background */
 }
 
+::ng-deep .custom-dialog-container .mat-dialog-container {
+  background-color: rgb(246 245 245) !important;
+}
+
+
 
 .material-symbols-outlined {
   font-variation-settings:
