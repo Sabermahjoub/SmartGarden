@@ -263,10 +263,18 @@
             <div class="w-full p-2 h-[25%] flex flex-col">
 
                 <div class="flex h-[50%] w-full">
-                    <span class="material-symbols-outlined text-lime-400">
-                        psychiatry
-                    </span>
-                    <span class="font-bold text-black text-xl">Tasks</span>
+                    <div class="flex p-2 mt-0 justify-center items-center">
+                        <span class="material-symbols-outlined text-lime-400">
+                            psychiatry
+                        </span>
+                        <span class="font-bold text-black text-xl">Tasks</span>
+                    </div>
+                    <div class="flex-grow"></div>
+
+                    <div class="flex p-2 justify-center items-center">
+                        <mat-icon (click)="openCreateTaskComponent()" class="text-lime-400 cursor-pointer" >add_circle_outline</mat-icon>
+                    </div>
+
                 </div>
                 
                 <div class="h-[20%] w-full">

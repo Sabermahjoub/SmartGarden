@@ -1,0 +1,41 @@
+::ng-deep.mat-form-field.mat-focused .mat-form-field-ripple{
+    background-color: rgb(22, 201, 22);
+}
+::ng-deep .mat-form-field-appearance-fill .mat-form-field-flex {
+    border-bottom: 2px solid rgb(13, 238, 13);
+    background-color: rgb(143, 143, 143) !important;
+    padding: 10px !important;
+}
+::ng-deep {
+    .mat-form-field-appearance-outline .mat-form-field-outline {
+       color: rgb(179, 48, 15) !important;
+    }
+    mat-form-field {
+       .mat-hint, input, ::placeholder, .mat-form-field-label {
+          color: black;
+       }
+    }
+
+    /* Style the form field label */
+    .mat-form-field-appearance-fill .mat-form-field-label,
+    .mat-form-field-appearance-outline .mat-form-field-label {
+      color: black !important; /* Ensure the label is always black */
+    }
+  
+    /* Change the label color when the field is focused (selected) */
+    .mat-form-field-appearance-fill.mat-focused .mat-form-field-label,
+    .mat-form-field-appearance-outline.mat-focused .mat-form-field-label {
+      color: black !important; /* Keep the label black when focused */
+    }
+  
+    /* Style input text and placeholder */
+    // mat-form-field input, 
+    // mat-form-field ::placeholder {
+    //   color: black !important; /* Set the text and placeholder color to black */
+    // }
+  
+    /* Optional: Style the hint text */
+    .mat-form-field-hint-wrapper .mat-hint {
+      color: black !important; /* Set the hint text color */
+    }
+}
