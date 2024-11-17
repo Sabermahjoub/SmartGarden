@@ -299,6 +299,7 @@
                                     <span class="text-neutral-700 text-xl p-0 font-bold">
                                         {{ task.name }}
                                     </span>
+
                                 </div>
                                 <div class="flex-grow"></div>
                                 <div class="p-0">
@@ -317,8 +318,15 @@
 
                     <div class="flex flex-col h-[80%]">
                         <p class="text-neutral-900">{{ task.description }}</p>
-                        <p class="text-neutral-600 font-thin">{{ task.starting_time }} - {{task.ending_time}}</p>
+                        <span class="flex gap-1">
+                            <p class="text-neutral-600 flex gap-2 justify-center items-center font-thin">
+                                {{ task.starting_time }} - {{task.ending_time}}
+                                <mat-icon *ngIf="isTimeEarlier(task.starting_time)" matTooltip="This task is behind schedule." matTooltipPosition="right" class="text-orange-400 cursor-pointer">error</mat-icon>
+                            </p>
+                        </span>
+                            
                     </div>
+
                 </mat-card>
 
             </div>
