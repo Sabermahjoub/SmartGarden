@@ -278,12 +278,12 @@
                 </div>
                 
                 <div class="h-[20%] w-full">
-                    <mat-progress-bar class="custom-progress-bar" mode="determinate" value="40"></mat-progress-bar>
+                    <mat-progress-bar class="custom-progress-bar" mode="determinate" [value]="getPercentageOfDoneTasks()"></mat-progress-bar>
                 </div>
                 <div class="h-[5%] w-full flex">
-                    <span class="text-black"><b>40%</b></span>
+                    <span class="text-black"><b>{{getPercentageOfDoneTasks()}}%</b></span>
                     <div class="flex-grow"></div>
-                    <span class="text-black"><b>2/5</b> Tasks Completed</span>
+                    <span class="text-black"><b>{{getAllDoneTasks()}}/{{getTasksLength()}}</b> Tasks Completed</span>
                 </div>
 
             </div>
@@ -297,13 +297,18 @@
                             <div class="flex w-full p-0">
                                 <div class="p-0 -ml-8">
                                     <span class="text-neutral-700 text-xl p-0 font-bold">
-                                        {{ task.title }}
+                                        {{ task.name }}
                                     </span>
                                 </div>
                                 <div class="flex-grow"></div>
                                 <div class="p-0">
-                                    <button class="circle p-0" [class.checked]="task.completed" (click)="toggleTask(task)">
-                                        <span *ngIf="task.completed" class="material-icons">check</span>
+                                    <button 
+                                        [ngClass]="{'cursor-default': task.done, 'cursor-pointer' : !task.done}" 
+                                        class="circle p-0" 
+                                        [class.checked]="task.done" 
+                                        [disabled]="task.done" 
+                                        (click)="completeTask(task)">
+                                        <span *ngIf="task.done" class="material-icons">check</span>
                                     </button>
                                 </div>
                             </div>
@@ -312,7 +317,7 @@
 
                     <div class="flex flex-col h-[80%]">
                         <p class="text-neutral-900">{{ task.description }}</p>
-                        <p class="text-neutral-600 font-thin">{{ task.time }}</p>
+                        <p class="text-neutral-600 font-thin">{{ task.starting_time }} - {{task.ending_time}}</p>
                     </div>
                 </mat-card>
 

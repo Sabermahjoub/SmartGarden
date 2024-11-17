@@ -11,12 +11,18 @@
     </div>
 
     <div class="p-0 m-0 h-[92%] flex">
-        <form  class="flex p-0 m-0 bg-customGrey flex-col gap-6 justify-center items-center w-full">
+        <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="flex p-0 m-0 bg-customGrey flex-col gap-6 justify-center items-center w-full">
             
             <div class="h-[10%] p-0 !m-0 w-full px-4">
-                <mat-chip-list class="!mb-0" #chipList>
-                    <mat-chip class="!bg-lightGreen min-w-[10%] max-w-[20%]" *ngFor="let plant of plants">
-                      <span class="flex justify-center items-center">{{plant}}</span>
+                <mat-chip-list formControlName="plant" class="!mb-0" #chipList>
+                    <mat-chip 
+                        [ngClass]="{'!bg-green-900': isSelected(plant.name)}" 
+                        [value]="plant.name" 
+                        (click)="chipChange(plant)"
+                        class="!bg-lightGreen min-w-[10%] max-w-[20%]" 
+                        *ngFor="let plant of plants"
+                    >
+                      <span class="flex justify-center items-center">{{plant.name}}</span>
                     </mat-chip>
                 </mat-chip-list>
             </div>
@@ -24,22 +30,28 @@
             <div class="w-full px-4">
                 <mat-form-field class="w-full" appearance="fill">
                     <mat-label>Task name</mat-label>
-                    <input matInput placeholder="Task1..." required>
+                    <input formControlName="task_name" matInput placeholder="Task1..." required>
+                    <mat-error *ngIf="taskForm.get('task_name')?.hasError('required')">
+                        <span class="font-bold text-sm text-red-700">Task name is required.</span>
+                    </mat-error>
                 </mat-form-field>
             </div>
 
             <div class="w-full px-4">
                 <mat-form-field class="w-full" appearance="fill">
                     <mat-label>Description</mat-label>
-                    <textarea class="!max-h-[15%] overflow-y-auto w-full !resize-none" matInput placeholder="Apply organic fertilizer at base of plants. Quantity: 50g per plant"></textarea>
+                    <textarea formControlName="description" class="!max-h-[15%] overflow-y-auto w-full !resize-none" matInput placeholder="Apply organic fertilizer at base of plants. Quantity: 50g per plant"></textarea>
+                    <mat-error *ngIf="taskForm.get('description')?.hasError('minlength')">
+                        <span class="font-bold text-sm text-red-700">Minimal length is 6.</span>
+                    </mat-error>
                 </mat-form-field>
             </div>
 
             <div class="w-full px-4">
                 <mat-form-field class="w-full" appearance="fill">
                     <mat-label>Task type</mat-label>
-                    <mat-select>
-                        <mat-option *ngFor="let type of task_types">{{ type }}</mat-option>
+                    <mat-select formControlName="task_type" >
+                        <mat-option [value]="type" *ngFor="let type of task_types">{{ type }}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -47,21 +59,21 @@
             <div class="w-full flex px-4">
                 <div class="w-[40%] h-full flex gap-2">
                     <label for="time" class="text-black">Select starting time:</label>
-                    <input class="text-black w-[35%]" id="timeS" type="time">
+                    <input formControlName="starting_time" class="text-black w-[35%]" id="timeS" type="time">
                 </div>
                 <div class="flex-grow"></div>
 
                 <div class="w-[40%] flex gap-2">
                     <label for="time" class="text-black">Select ending time:</label>
-                    <input class="text-black w-[35%]" id="timeE" type="time">
+                    <input formControlName="ending_time" class="text-black w-[35%]" id="timeE" type="time">
                 </div>
                 
             </div>
 
             <div class="w-[50%] px-4">
-                <button class="w-full justify-center items-center !bg-lightGreen" type="submit" mat-raised-button>
+                <button [disabled]="taskForm.invalid" class="w-full justify-center items-center !bg-lightGreen" type="submit" mat-raised-button>
                     <div class="flex justify-center items-center">
-                        <mat-spinner  color="accent" diameter="25"></mat-spinner>
+                        <mat-spinner *ngIf="loading" color="accent" diameter="25"></mat-spinner>
                         <span class="ml-2">Create</span>
                     </div>
                 </button>
