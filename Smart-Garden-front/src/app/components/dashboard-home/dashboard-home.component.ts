@@ -116,14 +116,27 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
     }
   }
 
+  getPercentageOfDoneTasks() : number {
+    const percentage = this.getAllDoneTasks() * 100 / this.getTasksLength();
+    return Math.trunc(percentage);
+  }
+
+  getTasksLength() : number {
+    return this.tasks.length;
+  }
+
+  getAllDoneTasks(): number {
+    return this.tasks.filter(task => task.done).length;
+  }
+
   tasks = [
-    { title: 'Watering', description: 'Water plants with 1 inch of water in the morning', time: '07:00 AM - 07:30 AM', completed: false },
-    { title: 'Fertilizing', description: 'Apply organic fertilizer at base of plants. Quantity: 50g per plant', time: '07:30 AM - 10:00 AM', completed: false },
-    { title: 'Pest Inspection', description: 'Check leaves for any signs of aphids or other pests', time: '08:00 AM - 08:30 AM', completed: false }
+    { name: 'Watering', description: 'Water plants with 1 inch of water in the morning', starting_time : "07:00", ending_time:"07:30", done: true },
+    { name: 'Fertilizing', description: 'Apply organic fertilizer at base of plants. Quantity: 50g per plant', starting_time : "07:00", ending_time:"10:00", done: false },
+    { name: 'Pest Inspection', description: 'Check leaves for any signs of aphids or other pests', starting_time : "08:00", ending_time:"08:30", done: false }
   ];
 
-  toggleTask(task :any) {
-    task.completed = !task.completed;
+  completeTask(task :any) {
+    task.done = !task.done;
     this.snackBar.open(
       'Great Job. You have finished a task.',
       'Close',
