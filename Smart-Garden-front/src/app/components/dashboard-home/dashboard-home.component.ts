@@ -109,6 +109,22 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
     
   }
 
+  isTimeEarlier(time: string): boolean {
+    // Split the time strings into hours and minutes
+    const [hours1, minutes1] = time.split(":").map(Number);
+    const [hours2, minutes2] = this.formattedTime.split(":").map(Number);
+
+    // Compare hours first
+    if (hours1 < hours2) {
+        return true;
+    } else if (hours1 > hours2) {
+        return false;
+    }
+
+    // If hours are equal, compare minutes
+    return minutes1 < minutes2;
+  }
+
   ngOnDestroy(): void {
     // Clear the interval when the component is destroyed to prevent memory leaks
     if (this.intervalId) {
@@ -130,7 +146,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   }
 
   tasks = [
-    { name: 'Watering', description: 'Water plants with 1 inch of water in the morning', starting_time : "07:00", ending_time:"07:30", done: true },
+    { name: 'Watering', description: 'Water plants with 1 inch of water in the morning', starting_time : "23:00", ending_time:"23:30", done: true },
     { name: 'Fertilizing', description: 'Apply organic fertilizer at base of plants. Quantity: 50g per plant', starting_time : "07:00", ending_time:"10:00", done: false },
     { name: 'Pest Inspection', description: 'Check leaves for any signs of aphids or other pests', starting_time : "08:00", ending_time:"08:30", done: false }
   ];
