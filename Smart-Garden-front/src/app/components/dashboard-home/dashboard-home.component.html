@@ -51,13 +51,22 @@
         <!-- Time && Location -->
         <div class="bg-lightGreen flex justify-center items-center rounded-md h-full w-[35%]" >
             <!-- Location && Date-->
+            
             <div class="flex w-[50%] flex-col justify-center items-center gap-6">
-                <div class="w-full flex justify-center items-center">
+                <div class="w-full flex gap-3 justify-center items-center">
                     <span class="flex justify-center items-center">
                         <mat-icon class="text-lime-800">location_on</mat-icon>
                         Tunis
                     </span>
+
+                    <span *ngIf="isDay()" class="text-yellow-300 material-symbols-outlined">
+                        light_mode
+                    </span>
+                    <span *ngIf="isNight()" class="text-gray-200 material-symbols-outlined">
+                        bedtime
+                    </span>
                 </div>
+
 
                 <!-- Today's date -->
                 <div class="w-full flex justify-center items-center">
@@ -97,10 +106,12 @@
                     <mat-spinner *ngIf="formattedTime === ''" color="accent" diameter="50"></mat-spinner>
                     <span *ngIf="formattedTime !== ''" class="text-7xl">{{formattedTime}}</span>
                 </div>
+
                 <div [ngClass]="{'invisible': weatherApiData.description === null}" class="w-full mt-4 flex justify-center items-center">
                     <mat-icon>rain</mat-icon>
                     <span  *ngIf="weatherApiData.description !== null">{{weatherApiData.description}}</span>
                 </div>
+               
             </div>
         </div>
 

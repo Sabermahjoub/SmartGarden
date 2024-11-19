@@ -49,6 +49,8 @@ export class DateHourTempService {
           hourDataPlus1 = response.days[0]?.hours.find((hour: any) => hour.datetime === time_param.replace(time_param[0],String(Number(time_param[0])+1)));
         }
         const weatherApiData : WeatherApiData = {
+          sunrise : response.days[0].sunrise? response.days[0].sunrise.substring(0, 5) : null,
+          sunset : response.days[0].sunset? response.days[0].sunset.substring(0, 5) : null,
           minTemperature: Math.floor(fahrenheitToCelsius(response.days[0]?.tempmin)),
           maxTemperature: Math.floor(fahrenheitToCelsius(response.days[0]?.tempmax)),
           description : response.days[0]?.conditions,
@@ -62,6 +64,8 @@ export class DateHourTempService {
       catchError(error => {
         console.error(error);
         const weatherApiData : WeatherApiData = {
+          sunrise : null,
+          sunset : null,
           minTemperature: null,
           maxTemperature: null,
           description : null,
