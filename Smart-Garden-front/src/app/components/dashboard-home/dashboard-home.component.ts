@@ -41,6 +41,8 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   private intervalId: any;
 
   weatherApiData: WeatherApiData = {
+    sunrise : null,
+    sunset : null,
     minTemperature: null,
     maxTemperature: null,
     description: null,
@@ -111,6 +113,16 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
       }
     });
     
+  }
+
+  isDay() : boolean {
+    if (this.weatherApiData.sunrise === null ) return false;
+    return this.isTimeEarlier(this.weatherApiData.sunrise);
+  }
+
+  isNight() : boolean {
+    if (this.weatherApiData.sunset === null ) return false;
+    return !this.isTimeEarlier(this.weatherApiData.sunset);
   }
 
   isTimeEarlier(time: string): boolean {

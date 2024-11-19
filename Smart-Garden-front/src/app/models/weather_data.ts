@@ -1,4 +1,6 @@
 export interface WeatherApiData {
+    sunrise : string | null,
+    sunset : string | null,
     minTemperature: number | null ;
     maxTemperature: number | null;
     description: string | null;
