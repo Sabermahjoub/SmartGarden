@@ -27,6 +27,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips'; 
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { CreatePlantComponent } from './components/create-plant/create-plant.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -34,7 +35,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     DashboardHomeComponent,
     DashboardComponent,
     LogsComponent,
-    CreateTaskComponent
+    CreateTaskComponent,
+    CreatePlantComponent
   ],
   imports: [
     BrowserModule,

@@ -8,6 +8,7 @@ import { WeatherApiData } from 'src/app/models/weather_data';
 import { DatePipe } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateTaskComponent } from '../create-task/create-task.component';
+import { CreatePlantComponent } from '../create-plant/create-plant.component';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -28,6 +29,9 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
 
   @ViewChild('canvas', { static: false }) canvas!: ElementRef<HTMLCanvasElement>;
   chart!: Chart;
+
+
+  plantNames : string[] = ['Tomato', 'Pea', 'Chickpea', 'Carrot', 'Pepper', 'Potato'];
 
   
   // Current Date info 
@@ -164,6 +168,17 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
       }
     );
   }
+
+  openCreatePlantComponent() {
+    this.dialog.open(CreatePlantComponent, {
+      maxHeight: '90vh', 
+      height: '90%',
+      minHeight: '450px',
+      minWidth: '750px',
+      width: '50%',
+      panelClass: 'custom-dialog-container',
+    });
+  };
 
   openCreateTaskComponent() {
     this.dialog.open(CreateTaskComponent, {

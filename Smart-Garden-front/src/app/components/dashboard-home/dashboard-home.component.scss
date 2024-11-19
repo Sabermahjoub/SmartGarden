@@ -93,3 +93,22 @@
 ::ng-deep .mat-simple-snackbar-action > button {
   color: white;
 }
+
+
+/* For WebKit Browsers (Chrome, Edge, Safari) */
+div {
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: gray lightgray; /* For Firefox */
+
+  /* WebKit Customization */
+}
+div::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+  height: 8px; /* Height of the horizontal scrollbar */
+}
+
+
+.scrollbar-color {
+   scrollbar-color: rgb(95, 161, 64) rgb(226, 226, 226) ;
+}
+
