@@ -2,8 +2,11 @@ from flask import Flask, jsonify
 import paho.mqtt.client as paho
 from paho import mqtt
 import time
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+CORS(app)  # Allow all origins by default
 received_data = None
 import mysql.connector
 db_config = {

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { WeatherApiData, fahrenheitToCelsius, convertMphToKmph, determineSevereRiskOfCatastrophe } from 'src/app/models/weather_data';
+import { WeatherApiData, backendData, fahrenheitToCelsius, convertMphToKmph, determineSevereRiskOfCatastrophe } from 'src/app/models/weather_data';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,8 @@ export class DateHourTempService {
 
   //private apiUrl = 'http://api.timezonedb.com/v2.1/list-time-zone?key=5TFD9L5CIQR8&format=xml&country=TN';
   private weatherUrl = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Tunis?key=6N7KTZVR8JH3UUGBKTBBY45FG";
-  
+  private dataApiUrl = "http://127.0.0.1:5000/getData";
+
   incrementHour(time: string): string {
     // Split the time string by ":"
     const [hourStr, minuteStr, secondStr] = time.split(":");
@@ -36,6 +37,33 @@ export class DateHourTempService {
   }
   
   constructor(private http : HttpClient) { }
+
+  getDataFromBack() : Observable<backendData> {
+    return this.http.get(this.dataApiUrl, { responseType: 'json' }).pipe(
+      map( 
+        (response :any) => {
+          console.log("Response : ",response);
+          const data : backendData = {
+            temperature : response.data.temperature ? parseFloat(response.data.temperature.toFixed(1))  : null,
+            humidity : response.data.humidity ? parseFloat(response.data.humidity.toFixed(1))  : null,
+            light_percentage : response.data.light_percentage ? parseFloat(response.data.light_percentage.toFixed(1)) : null
+          };
+          console.log("Backend data :", data);
+          return data;
+        }
+      ), 
+      catchError(error => {
+        console.error(error);
+        const data : backendData = {
+          temperature : null,
+          humidity : null,
+          light_percentage : null
+        };
+        return of(data);
+      })
+    );
+
+  };
 
   getWeatherData(time_param : string): Observable<WeatherApiData> {
     return this.http.get(this.weatherUrl, { responseType: 'json' }).pipe(

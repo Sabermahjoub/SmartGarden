@@ -4,7 +4,7 @@ import {Chart} from 'chart.js';
 import { ChartConfiguration } from 'chart.js';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DateHourTempService } from 'src/app/services/date-hour-temp.service';
-import { WeatherApiData } from 'src/app/models/weather_data';
+import { WeatherApiData, backendData } from 'src/app/models/weather_data';
 import { DatePipe } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateTaskComponent } from '../create-task/create-task.component';
@@ -16,7 +16,7 @@ import { CreatePlantComponent } from '../create-plant/create-plant.component';
   styleUrls: ['./dashboard-home.component.scss'],
   providers: [DatePipe]
 })
-export class DashboardHomeComponent implements OnInit, AfterViewInit {
+export class DashboardHomeComponent implements OnInit {
 
   @ViewChild('drawer') drawer!: MatDrawer; // Access drawer using the #drawer template reference
   constructor(
@@ -40,6 +40,11 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
 
   private intervalId: any;
 
+  backendData : backendData = {
+    temperature : null,
+    humidity : null,
+    light_percentage : null
+  }
   weatherApiData: WeatherApiData = {
     sunrise : null,
     sunset : null,
@@ -51,30 +56,30 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
     risk : null
   };
 
-  ngAfterViewInit(): void {
-    this.chart = new Chart(this.canvas.nativeElement, {
-      type: 'bar',
-      data: {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-        datasets: [
-          {
-            label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
-            borderWidth: 1,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)', // Add background color
-            borderColor: 'rgba(75, 192, 192, 1)',      // Add border color
-          },
-        ],
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
-        },
-      },
-    });
-  }
+  // ngAfterViewInit(): void {
+  //   this.chart = new Chart(this.canvas.nativeElement, {
+  //     type: 'bar',
+  //     data: {
+  //       labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+  //       datasets: [
+  //         {
+  //           label: '# of Votes',
+  //           data: [12, 19, 3, 5, 2, 3],
+  //           borderWidth: 1,
+  //           backgroundColor: 'rgba(75, 192, 192, 0.2)', // Add background color
+  //           borderColor: 'rgba(75, 192, 192, 1)',      // Add border color
+  //         },
+  //       ],
+  //     },
+  //     options: {
+  //       scales: {
+  //         y: {
+  //           beginAtZero: true,
+  //         },
+  //       },
+  //     },
+  //   });
+  // }
 
   ngOnInit(): void {
 
@@ -112,12 +117,16 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
         );
       }
     });
+
+    this.dateService.getDataFromBack().subscribe(response => {
+      this.backendData = response;
+    });
     
   }
 
   isDay() : boolean {
     if (this.weatherApiData.sunrise === null ) return false;
-    return this.isTimeEarlier(this.weatherApiData.sunrise);
+    return !this.isTimeEarlier(this.weatherApiData.sunrise);
   }
 
   isNight() : boolean {
