@@ -28,6 +28,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips'; 
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CreatePlantComponent } from './components/create-plant/create-plant.component';
+import { MatSliderModule } from '@angular/material/slider';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -59,7 +61,8 @@ import { CreatePlantComponent } from './components/create-plant/create-plant.com
     MatDialogModule,
     MatSelectModule,
     MatChipsModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSliderModule
   ],
   providers: [],
   bootstrap: [AppComponent]

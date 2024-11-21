@@ -46,7 +46,7 @@
                         <mat-form-field class="w-full" appearance="fill">
                             <mat-label class="!text-xs">Minimal</mat-label>
                             <input min="0" type="number" formControlName="minTemp_day" matInput placeholder="16°C" required>
-                            <mat-error *ngIf="plantForm.get('plant_name')?.hasError('required')">
+                            <mat-error *ngIf="plantForm.get('minTemp_day')?.hasError('required')">
                                 <span class="font-bold text-sm text-red-600">Min temperature is required.</span>
                             </mat-error>
                         </mat-form-field>
@@ -54,7 +54,7 @@
                         <mat-form-field class="w-full" appearance="fill">
                             <mat-label class="!text-xs">Maximal</mat-label>
                             <input min="0" type="number" formControlName="maxTemp_day" matInput placeholder="27°C" required>
-                            <mat-error *ngIf="plantForm.get('plant_name')?.hasError('required')">
+                            <mat-error *ngIf="plantForm.get('maxTemp_day')?.hasError('required')">
                                 <span class="font-bold text-sm text-red-600">Max temperature is required.</span>
                             </mat-error>
                         </mat-form-field>
@@ -79,7 +79,7 @@
 
                         <mat-form-field class="w-full" appearance="fill">
                             <mat-label class="!text-xs">Maximal</mat-label>
-                            <input type="number" formControlName="maxTemp_night" matInput placeholder="27°C" required>
+                            <input type="number" formControlName="maxTemp_night" matInput placeholder="27°C">
                         </mat-form-field>
                     </div>
                 </div>
@@ -94,23 +94,41 @@
                         </p>
                     </div>
 
-                    <div class="flex gap-2">
+                    <div class="flex flex-col gap-2">
 
-                        <mat-form-field class="w-full" appearance="fill">
-                            <mat-label class="!text-xs">Minimal</mat-label>
-                            <input min="0" type="number" formControlName="minHumidity" matInput placeholder="15%" required>
-                            <mat-error *ngIf="plantForm.get('minHumidity')?.hasError('required')">
-                                <span class="font-bold text-sm text-red-700">Min humidity is required.</span>
-                            </mat-error>
-                        </mat-form-field>
+                        <div class="slider-container">
+                            <!-- Track between thumbs -->
+                            <div class="slider-track px-3" [style.left.%]="startPercentage_1" [style.width.%]="rangeWidth_1"></div>
+                        
+                            <!-- Start Thumb -->
+                            <input
+                            type="range"
+                            class="slider-thumb"
+                            [min]="min"
+                            [max]="max"
+                            [value]="startValue_1"
+                            [style.right.%]="0"
+                            (input)="onStartValueChange_1($event)"
+                            />
+                        
+                            <!-- End Thumb -->
+                            <input
+                            type="range"
+                            class="slider-thumb"
+                            [min]="min"
+                            [max]="max"
+                            [value]="endValue_1"
+                            [style.left.%]="1"
+                            (input)="onEndValueChange_1($event)"
+                            />
+                        </div>
 
-                        <mat-form-field class="w-full" appearance="fill">
-                            <mat-label class="!text-xs">Maximal</mat-label>
-                            <input min="0" type="number" formControlName="maxHumidity" matInput placeholder="88%" required>
-                            <mat-error *ngIf="plantForm.get('maxHumidity')?.hasError('required')">
-                                <span class="font-bold text-sm text-red-700">Max humidity is required.</span>
-                            </mat-error>
-                        </mat-form-field>
+                        <div class="flex font-semibold">
+                            <p class="text-darkGreen">Min Humidity : {{startValue_1}}%</p>
+                            <div class="flex-grow"></div>
+                            <p class="text-darkGreen">Max Humidity : {{endValue_1}}%</p>
+                        </div>
+                          
                     </div>
                 </div>
 
@@ -175,23 +193,40 @@
                         </p>
                     </div>
 
-                    <div class="flex gap-2">
+                    <div class="flex flex-col gap-2">
 
-                        <mat-form-field class="w-full" appearance="fill">
-                            <mat-label class="!text-xs">Minimal</mat-label>
-                            <input min="0" type="number" formControlName="minSoilMoisture" matInput placeholder="50%" required>
-                            <mat-error *ngIf="plantForm.get('minSoilMoisture')?.hasError('required')">
-                                <span class="font-bold text-sm text-red-700">Min Soil moisture is required.</span>
-                            </mat-error>
-                        </mat-form-field>
+                        <div class="slider-container">
+                            <!-- Track between thumbs -->
+                            <div class="slider-track px-3" [style.left.%]="startPercentage_2" [style.width.%]="rangeWidth_2"></div>
+                        
+                            <!-- Start Thumb -->
+                            <input
+                            type="range"
+                            class="slider-thumb"
+                            [min]="min"
+                            [max]="max"
+                            [value]="startValue_2"
+                            [style.right.%]="0"
+                            (input)="onStartValueChange_2($event)"
+                            />
+                        
+                            <!-- End Thumb -->
+                            <input
+                            type="range"
+                            class="slider-thumb"
+                            [min]="min"
+                            [max]="max"
+                            [value]="endValue_2"
+                            [style.left.%]="1"
+                            (input)="onEndValueChange_2($event)"
+                            />
+                        </div>
 
-                        <mat-form-field class="w-full" appearance="fill">
-                            <mat-label class="!text-xs">Maximal</mat-label>
-                            <input min="0" type="number" formControlName="maxSoilMoisture" matInput placeholder="70%" required>
-                            <mat-error *ngIf="plantForm.get('maxSoilMoisture')?.hasError('required')">
-                                <span class="font-bold text-sm text-red-700">Max Soil moisture is required.</span>
-                            </mat-error>
-                        </mat-form-field>
+                        <div class="flex font-semibold">
+                            <p class="text-darkGreen">Min Soil Moisture : {{startValue_2}}%</p>
+                            <div class="flex-grow"></div>
+                            <p class="text-darkGreen">Max Soil Moisture : {{endValue_2}}%</p>
+                        </div>
                     </div>
                 </div>
 
@@ -227,7 +262,7 @@
 
                 <!-- Submit -->
                 <div class="w-[50%] px-4 mb-5">
-                    <button [disabled]="plantForm.invalid" class="w-full justify-center items-center !bg-lightGreen" type="submit" mat-raised-button>
+                    <button (click)="onSubmit()" [disabled]="plantForm.invalid"  class="w-full justify-center items-center !bg-lightGreen" type="submit" mat-raised-button>
                         <div class="flex justify-center items-center">
                             <mat-spinner *ngIf="loading" color="accent" diameter="25"></mat-spinner>
                             <span class="ml-2">Create</span>
