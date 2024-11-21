@@ -9,6 +9,12 @@ export interface WeatherApiData {
     risk : string | null;
 }
 
+export interface backendData {
+    humidity : number | null ,
+    temperature : number | null,
+    light_percentage : number | null
+}
+
 export function fahrenheitToCelsius(fahrenheit: number): number {
     return (fahrenheit - 32) * 5 / 9;
 }

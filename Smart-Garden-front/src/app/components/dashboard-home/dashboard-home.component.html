@@ -139,7 +139,10 @@
                             </div>
                         </div>
                         <div class="h-[50%] w-full p-2 flex justify-center items-center">
-                            <span class="text-7xl"><b>29</b><span class="text-lime-500">°C</span></span>
+                            <div *ngIf="backendData.temperature === null">
+                                <mat-spinner color="accent" diameter="50"></mat-spinner>
+                            </div>
+                            <span *ngIf="backendData.temperature !== null" class="text-7xl"><b>{{backendData.temperature}}</b><span class="text-lime-500">°C</span></span>
                         </div>
                     </div>
 
@@ -158,7 +161,10 @@
                         </div>
 
                         <div class="h-[50%] w-full p-2 flex justify-center items-center">
-                            <span class="text-7xl"><b>50</b><span class="text-lime-500">%</span></span>
+                            <div *ngIf="backendData.humidity === null">
+                                <mat-spinner color="accent" diameter="50"></mat-spinner>
+                            </div>
+                            <span *ngIf="backendData.humidity !== null" class="text-7xl"><b>{{backendData.humidity}}</b><span class="text-lime-500">%</span></span>
                         </div>
                     </div>
 
@@ -251,7 +257,10 @@
                             </div>
                         </div>
                         <div class="h-[50%] w-full p-2 flex justify-center items-center">
-                            <span><span class="text-7xl"><b>13</b></span><span class="text-lime-500 text-4xl">Lux</span></span>
+                            <div *ngIf="backendData.light_percentage === null">
+                                <mat-spinner color="accent" diameter="50"></mat-spinner>
+                            </div>
+                            <span *ngIf="backendData.light_percentage !== null"><span class="text-7xl"><b>{{backendData.light_percentage}}</b></span><span class="text-lime-500 text-4xl">%</span></span>
                         </div>
                     </div>
                 </div>
