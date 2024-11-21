@@ -122,7 +122,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
 
   isNight() : boolean {
     if (this.weatherApiData.sunset === null ) return false;
-    return !this.isTimeEarlier(this.weatherApiData.sunset);
+    return this.isTimeEarlier(this.weatherApiData.sunset);
   }
 
   isTimeEarlier(time: string): boolean {

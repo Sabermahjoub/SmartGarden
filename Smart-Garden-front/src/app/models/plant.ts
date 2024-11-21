@@ -12,5 +12,9 @@ export interface plant {
     minLight : number,
     maxLight : number,
     minSoilMoisture : number,
-    maxSoilMoisture : number
+    maxSoilMoisture : number,
+    lastDateOfIrrigation : string,
+    lastDateOfFertilizer : string,
+    lastDateOfPesticide : string,
+    lastDateOfNutrients : string,
 }
