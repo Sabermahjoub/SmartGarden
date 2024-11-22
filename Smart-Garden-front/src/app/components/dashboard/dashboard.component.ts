@@ -3,6 +3,7 @@ import { MatDrawer } from '@angular/material/sidenav';
 import { DashboardHomeComponent } from '../dashboard-home/dashboard-home.component';
 import { LogsComponent } from '../logs/logs.component';
 import { Subject, takeUntil } from 'rxjs';
+import { PredictionComponent } from '../prediction/prediction.component';
 
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 @Component({
@@ -22,6 +23,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   openHome() : void {
     this.step= 'dashboard-home';
+  }
+
+  openPrediction() : void {
+    this.step = 'prediction';
   }
 
   openLogs() : void {

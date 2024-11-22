@@ -53,7 +53,7 @@
                                 </span>
                             </button>
 
-                            <button mat-flat-button class="!bg-darkGreen rounded-sm p-0">
+                            <button (click)="openPrediction()" mat-flat-button [ngClass]="{'bg-lime-500' : step ==='prediction', 'bg-darkGreen': step !== 'prediction'}" class="rounded-sm p-0">
                                 <span class="material-symbols-outlined">
                                     network_node
                                 </span>
@@ -97,6 +97,12 @@
                         class="h-full w-full"
                     >
                     </app-logs>
+
+                    <app-prediction
+                        *ngSwitchCase="'prediction'"
+                        class="h-full w-full"
+                    >
+                    </app-prediction>
                 </div>
             </div>
 

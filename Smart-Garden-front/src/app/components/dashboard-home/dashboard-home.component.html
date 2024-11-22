@@ -24,7 +24,7 @@
                         <mat-card-header class="flex justify-center w-full">
                             <mat-card-title class="flex">
                                 <span class="text-black flex justify-center items-center font-thin">{{plant}}
-                                    <mat-icon class="text-red-500 text-bg cursor-pointer hover:text-red-700">
+                                    <mat-icon (click)="onDelete()" class="text-red-500 text-bg cursor-pointer hover:text-red-700">
                                         delete
                                     </mat-icon>
                                 </span>
