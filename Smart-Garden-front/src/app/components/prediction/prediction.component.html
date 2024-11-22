@@ -1,0 +1,90 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;700&display=swap" />
+
+<div class="!bg-customGrey p-2 flex w-full h-full">
+    <!-- Classification -->
+    <div class="flex p-3 gap-2 flex-col bg-darkGrey rounded-md  h-full w-[50%]">
+        <!-- header -->
+        <div class="p-2 m-0 gap-1 flex flex-col w-full h-[25%]">
+            <div class="flex justify-center items-center">
+                <p class="flex gap-1 justify-center items-center text-center font-semibold text-darkGreen text-3xl">
+                    <mat-spinner *ngIf="loading" color="accent" diameter="28"></mat-spinner>
+                    Prediction</p>
+            </div>
+            <div class="p-0 bg-customGrey flex justify-center items-center">
+                <p class="text-center font-extralight text-base text-black"><b class="text-lightGreen font-extrabold">Note :</b> The classification model built takes 
+                    <b>6 parameters</b> to predict if the plant is healthy or not. 3 of which are from the metrics captured from sensors <br><b class="text-lightGreen font-semibold">(light intensity, humidity, and temperature)</b></p>
+            </div>
+
+        </div>
+        <form [formGroup]="predictionForm" class="flex h-[85%] p-2 m-0 flex-col gap-2 justify-center items-center w-full">
+            <div class="w-full px-4">
+                <div class="flex">
+                    <p class="flex justify-center items-center text-darkGreen">Soil type : &nbsp;
+                        <span class="text-lime-500 material-symbols-outlined">
+                            landslide
+                        </span>
+                    </p>
+                </div>
+
+                <mat-form-field class="w-full" appearance="fill">
+                    <mat-label class="!text-xs">type :</mat-label>
+                    <mat-select formControlName="soil_type" >
+                        <mat-option [value]="type.value" *ngFor="let type of soil_type">{{ type.name }}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="predictionForm.get('soil_type')?.hasError('required')">
+                        <span class="font-bold text-sm text-red-700">input required.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="w-full px-4">
+                <div class="flex">
+                    <p class="flex justify-center items-center text-darkGreen">Watering frequency : &nbsp;
+                        <span class="text-lime-500 material-symbols-outlined">
+                            water_drop
+                        </span>
+                    </p>
+                </div>
+                <mat-form-field class="w-full" appearance="fill">
+                    <mat-label class="!text-xs">frequency :</mat-label>
+                    <mat-select formControlName="water_frequency" >
+                        <mat-option [value]="type.value" *ngFor="let type of water_frequency">{{ type.name }}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="predictionForm.get('water_frequency')?.hasError('required')">
+                        <span class="font-bold text-sm text-red-700">input required.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="w-full px-4">
+                <div class="flex">
+                    <p class="flex justify-center items-center text-darkGreen">Fertilizer type : &nbsp;
+                        <span class="text-lime-500 material-symbols-outlined">
+                            fertile
+                        </span>
+                    </p>
+                </div>
+                <mat-form-field class="w-full" appearance="fill">
+                    <mat-label class="!text-xs">type :</mat-label>
+                    <mat-select formControlName="fertilizer_type" >
+                        <mat-option [value]="type.value" *ngFor="let type of fertilizer_type">{{ type.name }}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="predictionForm.get('fertilizer_type')?.hasError('required')">
+                        <span class="font-bold text-sm text-red-700">input required.</span>
+                    </mat-error>
+                </mat-form-field>
+
+                  <!-- Submit -->
+                  <div class="flex justify-center mb-0 items-center px-4">
+                    <button (click)="onSubmit()" [disabled]="predictionForm.invalid"  class="w-full mb-0 justify-center items-center !bg-lightGreen" type="submit" mat-raised-button>
+                        <div class="flex justify-center items-center">
+                            <span class="ml-2">Predict</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="bg-darkGrey h-full w-[50%]"></div>
+</div>

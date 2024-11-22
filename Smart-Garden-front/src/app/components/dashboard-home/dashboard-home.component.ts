@@ -9,6 +9,7 @@ import { DatePipe } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateTaskComponent } from '../create-task/create-task.component';
 import { CreatePlantComponent } from '../create-plant/create-plant.component';
+import { ConfirmDialogueComponent } from '../confirm-dialogue/confirm-dialogue.component';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -213,6 +214,27 @@ export class DashboardHomeComponent implements OnInit {
       // minHeight: '180px',
     });
   };
+
+  onDelete() : void {
+
+    const deleteDialog = this.dialog.open(ConfirmDialogueComponent, {
+      width: '500px',
+      panelClass: 'custom-confirm-dialog-container',
+      data: { 
+        title: 'Confirm deletion', 
+        message: 'Are you sure you want to delete this plant?' 
+      }
+    });
+
+    deleteDialog.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('User confirmed the action');
+      } else {
+        console.log('User canceled the action');
+      }
+    });
+
+  }
   
   public doughnutChartLabels: string[] = [];
   public doughnutChartDatasets: ChartConfiguration<'doughnut'>['data']['datasets'] = [

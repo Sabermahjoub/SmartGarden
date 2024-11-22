@@ -29,6 +29,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CreatePlantComponent } from './components/create-plant/create-plant.component';
 import { MatSliderModule } from '@angular/material/slider';
+import { PredictionComponent } from './components/prediction/prediction.component';
+import { ConfirmDialogueComponent } from './components/confirm-dialogue/confirm-dialogue.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import { MatSliderModule } from '@angular/material/slider';
     DashboardComponent,
     LogsComponent,
     CreateTaskComponent,
-    CreatePlantComponent
+    CreatePlantComponent,
+    PredictionComponent,
+    ConfirmDialogueComponent
   ],
   imports: [
     BrowserModule,
