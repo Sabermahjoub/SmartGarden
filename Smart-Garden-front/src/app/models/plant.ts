@@ -8,7 +8,7 @@ export interface plant {
     maxHumidity: number,
     Wind : string, // Low, Moderate, High
     minUVIndex : number,
-    maxUvIndex : number,
+    maxUVIndex : number,
     minLight : number,
     maxLight : number,
     minSoilMoisture : number,

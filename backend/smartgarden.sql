@@ -29,6 +29,29 @@ CREATE TABLE IF NOT EXISTS `sensor_data` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=142 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+CREATE TABLE IF NOT EXISTS `plant` (
+  `plant_name` VARCHAR(20) NOT NULL,
+  `minTemp_day` INT NOT NULL,
+  `maxTemp_day` INT NOT NULL,
+  `minTemp_night` INT NOT NULL,
+  `maxTemp_night` INT NOT NULL,
+  `minHumidity` INT NOT NULL,
+  `maxHumidity` INT NOT NULL,
+  `Wind` VARCHAR(10) NOT NULL,
+  `minUVIndex` INT NOT NULL,
+  `maxUVIndex` INT NOT NULL,
+  `minLight` INT NOT NULL,
+  `maxLight` INT NOT NULL,
+  `minSoilMoisture` INT NOT NULL,
+  `maxSoilMoisture` INT NOT NULL,
+  `lastDateOfIrrigation` VARCHAR(10) NOT NULL,
+  `lastDateOfFertilizer` VARCHAR(10) NOT NULL,
+  `lastDateOfPesticide` VARCHAR(10) NOT NULL,
+  `lastDateOfNutrients` VARCHAR(10) NOT NULL,
+  PRIMARY KEY (`plant_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
 -- Dumping data for table gardenpy.sensor_data: ~128 rows (approximately)
 INSERT INTO `sensor_data` (`id`, `temperature`, `humidity`, `light_percentage`, `timestamp`) VALUES
 	(1, 24, 77, 27.6923, '2024-10-24 20:04:04'),
@@ -172,6 +195,97 @@ INSERT INTO `sensor_data` (`id`, `temperature`, `humidity`, `light_percentage`, 
 	(139, 24, 77, 10.0122, '2024-10-24 20:20:34'),
 	(140, 24, 77, 9.37729, '2024-10-24 20:20:41'),
 	(141, 24, 77, 9.79243, '2024-10-24 20:20:48');
+
+INSERT INTO `plant` 
+  VALUES (
+  'Tomato',
+  20, -- minTemp_day
+  27, -- maxTemp_day
+  15, -- minTemp_night
+  20, -- maxTemp_night
+  65, -- minHumidity
+  85, -- maxHumidity
+  'Light', -- Wind
+  6, -- minUVIndex
+  8, -- maxUVIndex
+  25, -- minLight (%)
+  50, -- maxLight (%)
+  60, -- minSoilMoisture (% field capacity)
+  70, -- maxSoilMoisture (% field capacity)
+  '', -- lastDateOfIrrigation (to be filled later)
+  '', -- lastDateOfFertilizer (to be filled later)
+  '', -- lastDateOfPesticide (to be filled later)
+  ''  -- lastDateOfNutrients (to be filled later)
+);
+
+INSERT INTO `plant`
+ VALUES (
+  'Chickpea',
+  20, -- minTemp_day
+  30, -- maxTemp_day
+  10, -- minTemp_night
+  20, -- maxTemp_night
+  50, -- minHumidity
+  60, -- maxHumidity
+  'Moderate', -- Wind
+  6, -- minUVIndex
+  8, -- maxUVIndex
+  25, -- minLight (%)
+  50, -- maxLight (%)
+  50, -- minSoilMoisture (% field capacity)
+  70, -- maxSoilMoisture (% field capacity)
+  '', -- lastDateOfIrrigation (to be filled later)
+  '', -- lastDateOfFertilizer (to be filled later)
+  '', -- lastDateOfPesticide (to be filled later)
+  ''  -- lastDateOfNutrients (to be filled later)
+);
+
+INSERT INTO `plant` 
+VALUES (
+  'Pepper',
+  20, -- minTemp_day
+  30, -- maxTemp_day
+  15, -- minTemp_night
+  20, -- maxTemp_night
+  50, -- minHumidity
+  70, -- maxHumidity
+  'Moderate', -- Wind
+  6, -- minUVIndex
+  8, -- maxUVIndex
+  30, -- minLight (%)
+  50, -- maxLight (%)
+  50, -- minSoilMoisture (% field capacity)
+  70, -- maxSoilMoisture (% field capacity)
+  '', -- lastDateOfIrrigation (to be filled later)
+  '', -- lastDateOfFertilizer (to be filled later)
+  '', -- lastDateOfPesticide (to be filled later)
+  ''  -- lastDateOfNutrients (to be filled later)
+);
+
+
+INSERT INTO `plant`
+ VALUES (
+  'Pea',
+  15, -- minTemp_day
+  25, -- maxTemp_day
+  10, -- minTemp_night
+  15, -- maxTemp_night
+  50, -- minHumidity
+  70, -- maxHumidity
+  'Moderate', -- Wind
+  4, -- minUVIndex
+  8, -- maxUVIndex
+  20, -- minLight (%)
+  40, -- maxLight (%)
+  60, -- minSoilMoisture (% field capacity)
+  80, -- maxSoilMoisture (% field capacity)
+  '', -- lastDateOfIrrigation (to be filled later)
+  '', -- lastDateOfFertilizer (to be filled later)
+  '', -- lastDateOfPesticide (to be filled later)
+  ''  -- lastDateOfNutrients (to be filled later)
+);
+
+
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
