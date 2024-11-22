@@ -286,6 +286,17 @@ INSERT INTO `plant`
 );
 
 
+-- Table for logs 
+CREATE TABLE IF NOT EXISTS `logs` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `plant_name` VARCHAR(20),
+  `operation` VARCHAR(20) NOT NULL, -- nutrients, pesticides, irrigation
+  `date` VARCHAR(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`plant_name`) REFERENCES `plant`(`plant_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=142 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
