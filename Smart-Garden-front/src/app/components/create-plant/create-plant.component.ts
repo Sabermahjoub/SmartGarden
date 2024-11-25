@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialogRef } from '@angular/material/dialog';
+import { PlantsService } from 'src/app/services/plants.service';
 
 @Component({
   selector: 'app-create-plant',
@@ -131,6 +132,8 @@ export class CreatePlantComponent implements OnInit {
 
 
   constructor(public dialogRef: MatDialogRef<CreatePlantComponent>,
+    private plantServices : PlantsService,
+    private snackBar: MatSnackBar,
     private fb : FormBuilder  ) { }
 
   ngOnInit(): void {
@@ -165,7 +168,40 @@ export class CreatePlantComponent implements OnInit {
 
   onSubmit() : void {
     this.loading= true;
-    console.log(this.plantForm);
+    console.log(this.plantForm.value);
+    this.plantServices.createPlant(this.plantForm.value).subscribe(response => {
+      if (response.error) {
+        this.snackBar.open(
+          'Error occurred while trying to create new plant. Try again !',
+          'Close',
+          {
+            duration: 4000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['custom-red-style'],
+          }
+        );
+        setTimeout(() => {
+          this.loading = false;
+        }, 1000); 
+      }
+      else {
+        this.snackBar.open(
+          'Plant successfully added.',
+          'Close',
+          {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['custom-green-style'],
+          }
+        );
+        setTimeout(() => {
+          this.loading = false;
+        }, 1000); 
+      }
+
+    })
   }
 
 }

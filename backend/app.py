@@ -1,12 +1,30 @@
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify
 import paho.mqtt.client as paho
 from paho import mqtt
 import time
 from flask_cors import CORS
+import mysql.connector
 
 app = Flask(__name__)
 
-CORS(app)  # Allow all origins by default
+CORS(app, resources={r"/*": {"origins": "*"}})
+# CORS(app, resources={
+#     r"/*": {
+#         "origins": "http://localhost:4200",  # Allow requests only from your Angular app
+#         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+#         "allow_headers": ["Content-Type", "Authorization"]
+#     }
+# })
+# @app.before_request
+# def handle_options_request():
+#     if request.method == "OPTIONS":
+#         response = app.make_response("")
+#         response.headers["Access-Control-Allow-Origin"] = "http://localhost:4200"
+#         response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+#         response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+#         return response
+
+
 received_data = None
 import mysql.connector
 db_config = {
@@ -42,10 +60,6 @@ def get_data():
     except Exception as e:
         return jsonify({'error': f'An error occurred: {str(e)}'})
 
-from flask import Flask, request, jsonify
-import mysql.connector
-
-app = Flask(__name__)
 
 # Database configuration
 db_config = {
@@ -54,6 +68,28 @@ db_config = {
     'password': '',
     'database': 'gardenpy'
 }
+
+@app.route('/getPlants', methods=['GET'])
+def get_plants():
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor(dictionary=True) 
+        query = "SELECT * FROM plant"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        if result:
+            return jsonify({'plants': result})
+        else:
+            return jsonify({'message': 'No data found in the sensor_data table'})
+    
+    except mysql.connector.Error as err:
+        return jsonify({'error': f'Database error: {err}'})
+    
+    except Exception as e:
+        return jsonify({'error': f'An error occurred: {str(e)}'})
+
 
 @app.route('/addPlant', methods=['POST'])
 def add_plant():

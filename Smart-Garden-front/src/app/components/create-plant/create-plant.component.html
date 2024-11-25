@@ -244,7 +244,7 @@
 
                         <mat-form-field class="w-full" appearance="fill">
                             <mat-label class="!text-xs">Minimal</mat-label>
-                            <input min="0" type="number" formControlName="minLight" matInput placeholder="25 Lux" required>
+                            <input min="0" max="100" type="number" formControlName="minLight" matInput placeholder="20%" required>
                             <mat-error *ngIf="plantForm.get('minLight')?.hasError('required')">
                                 <span class="font-bold text-sm text-red-700">Min light is required.</span>
                             </mat-error>
@@ -252,7 +252,7 @@
 
                         <mat-form-field class="w-full" appearance="fill">
                             <mat-label class="!text-xs">Maximal</mat-label>
-                            <input min="0" type="number" formControlName="maxLight" matInput placeholder="50 Lux" required>
+                            <input min="0" max="100" type="number" formControlName="maxLight" matInput placeholder="80%" required>
                             <mat-error *ngIf="plantForm.get('maxLight')?.hasError('required')">
                                 <span class="font-bold text-sm text-red-700">Max Soil moisture is required.</span>
                             </mat-error>

@@ -3,7 +3,11 @@ import { MatDrawer } from '@angular/material/sidenav';
 import {Chart} from 'chart.js';
 import { ChartConfiguration } from 'chart.js';
 import { MatSnackBar } from '@angular/material/snack-bar';
+
 import { DateHourTempService } from 'src/app/services/date-hour-temp.service';
+import { PlantsService } from 'src/app/services/plants.service';
+import { plant } from 'src/app/models/plant';
+
 import { WeatherApiData, backendData } from 'src/app/models/weather_data';
 import { DatePipe } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
@@ -23,6 +27,7 @@ export class DashboardHomeComponent implements OnInit {
   constructor(
     private snackBar: MatSnackBar,
     private dateService : DateHourTempService,
+    private plantsService : PlantsService,
     private datePipe : DatePipe,
     private dialog : MatDialog
   ) { 
@@ -32,7 +37,28 @@ export class DashboardHomeComponent implements OnInit {
   chart!: Chart;
 
 
-  plantNames : string[] = ['Tomato', 'Pea', 'Chickpea', 'Carrot', 'Pepper', 'Potato'];
+  selectedPlant : plant = {
+    plant_name : "",
+    minTemp_day : 0,
+    maxTemp_day : 0,    
+    minTemp_night : 0,
+    maxTemp_night : 0,
+    minHumidity : 0,
+    maxHumidity: 0,
+    Wind : "",
+    minUVIndex : 0,
+    maxUVIndex : 0,
+    minLight : 0,
+    maxLight : 0,
+    minSoilMoisture : 0,
+    maxSoilMoisture : 0,
+    lastDateOfIrrigation : "",
+    lastDateOfFertilizer : "",
+    lastDateOfPesticide : "",
+    lastDateOfNutrients : "",
+  };
+
+  allPlants : plant[] = [] ;
 
   
   // Current Date info 
@@ -57,32 +83,22 @@ export class DashboardHomeComponent implements OnInit {
     risk : null
   };
 
-  // ngAfterViewInit(): void {
-  //   this.chart = new Chart(this.canvas.nativeElement, {
-  //     type: 'bar',
-  //     data: {
-  //       labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-  //       datasets: [
-  //         {
-  //           label: '# of Votes',
-  //           data: [12, 19, 3, 5, 2, 3],
-  //           borderWidth: 1,
-  //           backgroundColor: 'rgba(75, 192, 192, 0.2)', // Add background color
-  //           borderColor: 'rgba(75, 192, 192, 1)',      // Add border color
-  //         },
-  //       ],
-  //     },
-  //     options: {
-  //       scales: {
-  //         y: {
-  //           beginAtZero: true,
-  //         },
-  //       },
-  //     },
-  //   });
-  // }
+  getAllPlants() : void {
+    this.plantsService.getAllPlants().subscribe( response =>{
+      if(response.plants) {
+        this.allPlants = response.plants;
+        console.log("Get All plants result : ",this.allPlants);
+      }
+      else {
+        console.log("error ");
+      }
+
+    });
+  }
 
   ngOnInit(): void {
+
+    this.getAllPlants();
 
     this.formattedDate = this.datePipe.transform(new Date(), 'EEE, MMMM dd, yyyy') || '';
     this.formattedTime = this.datePipe.transform(new Date(), 'HH:mm') || '';
@@ -123,6 +139,10 @@ export class DashboardHomeComponent implements OnInit {
       this.backendData = response;
     });
     
+  }
+
+  selectPlant(selectedPlant : any): void {
+    this.selectedPlant = selectedPlant;
   }
 
   isDay() : boolean {
@@ -192,13 +212,16 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   openCreatePlantComponent() {
-    this.dialog.open(CreatePlantComponent, {
+    const dialogRef = this.dialog.open(CreatePlantComponent, {
       maxHeight: '90vh', 
       height: '90%',
       minHeight: '450px',
       minWidth: '750px',
       width: '50%',
       panelClass: 'custom-dialog-container',
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      this.getAllPlants();
     });
   };
 
@@ -215,7 +238,7 @@ export class DashboardHomeComponent implements OnInit {
     });
   };
 
-  onDelete() : void {
+  onDelete(plantName : string) : void {
 
     const deleteDialog = this.dialog.open(ConfirmDialogueComponent, {
       width: '500px',
@@ -227,10 +250,39 @@ export class DashboardHomeComponent implements OnInit {
     });
 
     deleteDialog.afterClosed().subscribe(result => {
+      // User confirmed the action 
       if (result) {
-        console.log('User confirmed the action');
+        this.plantsService.deletePlant(plantName).subscribe(response => {
+          console.log("RESPONSE DELETE / ",response);
+          if (response.error) {
+            this.snackBar.open(
+              'Error occurred while trying to delete plant. Try again !',
+              'Close',
+              {
+                duration: 3000,
+                horizontalPosition: 'center',
+                verticalPosition: 'top',
+                panelClass: ['custom-red-style'],
+              }
+            );
+          }
+          else {
+            this.snackBar.open(
+              'Plant successfully deleted.',
+              'Close',
+              {
+                duration: 3000,
+                horizontalPosition: 'center',
+                verticalPosition: 'top',
+                panelClass: ['custom-style'],
+              }
+            );
+            this.getAllPlants();
+
+          }
+        });
       } else {
-        console.log('User canceled the action');
+        console.log('User canceled the deletion');
       }
     });
 
