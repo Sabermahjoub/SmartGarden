@@ -148,7 +148,41 @@
                             <div *ngIf="backendData.temperature === null">
                                 <mat-spinner color="accent" diameter="50"></mat-spinner>
                             </div>
-                            <span *ngIf="backendData.temperature !== null" class="text-7xl"><b>{{backendData.temperature}}</b><span class="text-lime-500">°C</span></span>
+                            <span *ngIf="backendData.temperature !== null" class="text-7xl"><b>{{backendData.temperature}}</b>
+                            <span [ngClass]="{'text-red-600' : verifyTemperatureRange() === 'VH' || verifyTemperatureRange() === 'VL' , 'text-lime-500' : verifyTemperatureRange() !== 'VH' && verifyTemperatureRange() !== 'VL'}">°C</span></span>
+                        </div>
+                        <div *ngIf="verifyTemperatureRange() !== ''" class="h-[20%] w-full">
+                            <div *ngIf="verifyTemperatureRange() === 'N'" class="flex w-full text-sm font-bold justify-center items-center text-lime-500 ">
+                                <span class="material-symbols-outlined">
+                                    verified_user
+                                </span>
+                                <span>Normal temperature range</span>
+                            </div>
+                            <div *ngIf="verifyTemperatureRange() === 'VH'" class="font-bold flex justify-center items-center text-red-600 ">
+                                <span class="material-symbols-outlined">
+                                    error
+                                </span>
+                                <span>Temperature is very high</span>
+                            </div>
+                            <div *ngIf="verifyTemperatureRange() === 'VL'" class="font-bold flex justify-center items-center text-red-600 ">
+                                <span class="material-symbols-outlined">
+                                    error
+                                </span>
+                                <span>Temperature is very low</span>
+                            </div>
+                            <div *ngIf="verifyTemperatureRange() === 'L' || verifyTemperatureRange() === 'H'" class="font-bold w-full flex text-sm justify-center items-center text-orange-600 ">
+                                <span class="material-symbols-outlined">
+                                    report
+                                </span>
+                                <span class="w-full">Temperature slightly out of range</span>
+                            </div>
+                            <!--mat-progress-bar 
+                            [ngClass]="{
+                                'safe': verifyTemperatureRange() === 'N',
+                                'warning': verifyTemperatureRange() === 'L' || verifyTemperatureRange() === 'H' ,
+                                'danger': verifyTemperatureRange() === 'VH' || verifyTemperatureRange() === 'VL' 
+                              }"
+                             mode="determinate" [value]="100"></!--mat-progress-bar-->
                         </div>
                     </div>
 
@@ -170,7 +204,35 @@
                             <div *ngIf="backendData.humidity === null">
                                 <mat-spinner color="accent" diameter="50"></mat-spinner>
                             </div>
-                            <span *ngIf="backendData.humidity !== null" class="text-7xl"><b>{{backendData.humidity}}</b><span class="text-lime-500">%</span></span>
+                            <span *ngIf="backendData.humidity !== null" class="text-7xl"><b>{{backendData.humidity}}</b>
+                                <span [ngClass]="{'text-red-600' : verifyHumidityRange() === 'VH' || verifyHumidityRange() === 'VL' , 'text-lime-500' : verifyHumidityRange() !== 'VH' && verifyHumidityRange() !== 'VL'}">%</span></span>
+                        </div>
+
+                        <div *ngIf="verifyHumidityRange() !== ''" class="h-[20%] w-full">
+                            <div *ngIf="verifyHumidityRange() === 'N'" class="flex font-bold w-full text-sm justify-center items-center text-lime-500 ">
+                                <span class="material-symbols-outlined">
+                                    verified_user
+                                </span>
+                                <span>Normal humidity range</span>
+                            </div>
+                            <div *ngIf="verifyHumidityRange() === 'VH'" class=" w-full flex font-bold justify-center items-center text-red-600 ">
+                                <span class="material-symbols-outlined">
+                                    error
+                                </span>
+                                <span>humidity is very high</span>
+                            </div>
+                            <div *ngIf="verifyHumidityRange() === 'VL'" class="w-full flex font-bold justify-center items-center text-red-600 ">
+                                <span class="material-symbols-outlined">
+                                    error
+                                </span>
+                                <span>humidity is very low</span>
+                            </div>
+                            <div *ngIf="verifyHumidityRange() === 'L' || verifyHumidityRange() === 'H'" class="w-full font-bold flex text-sm justify-center items-center text-orange-600 ">
+                                <span class="material-symbols-outlined">
+                                    report
+                                </span>
+                                <span class="w-full">Humidity slightly out of range</span>
+                            </div>
                         </div>
                     </div>
 
@@ -216,12 +278,41 @@
                             </div>
 
                         </div>
+                        
                         <div class="h-[50%] w-full p-2 flex justify-center items-center">
                             <div *ngIf="weatherApiData.uvindex === null">
                                 <mat-spinner color="accent" diameter="50"></mat-spinner>
                             </div>
                             <span *ngIf="weatherApiData.uvindex !== null" class="text-7xl"><b>{{weatherApiData.uvindex}}</b></span>
                         </div>
+
+                        <div *ngIf="verifyUVRange() !== ''" class="h-[20%] w-full">
+                            <div *ngIf="verifyUVRange() === 'N'" class="flex w-full text-sm justify-center font-bold  items-center text-lime-500 ">
+                                <span class="material-symbols-outlined">
+                                    verified_user
+                                </span>
+                                <span>Normal UV range</span>
+                            </div>
+                            <div *ngIf="verifyUVRange() === 'VH'" class="flex justify-center font-bold items-center text-red-600 ">
+                                <span class="material-symbols-outlined">
+                                    error
+                                </span>
+                                <span>UV index very high</span>
+                            </div>
+                            <div *ngIf="verifyUVRange() === 'VL'" class="flex justify-center font-bold items-center text-red-600 ">
+                                <span class="material-symbols-outlined">
+                                    error
+                                </span>
+                                <span>UV index is very low</span>
+                            </div>
+                            <div *ngIf="verifyUVRange() === 'L' || verifyUVRange() === 'H'" class="w-full font-bold flex text-sm justify-center items-center text-orange-600 ">
+                                <span class="material-symbols-outlined">
+                                    report
+                                </span>
+                                <span class="w-full">UV index slightly out of range</span>
+                            </div>
+                        </div>
+
                     </div>
 
                     <!-- Soil Moisture -->
@@ -262,11 +353,40 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="h-[50%] w-full p-2 flex justify-center items-center">
                             <div *ngIf="backendData.light_percentage === null">
                                 <mat-spinner color="accent" diameter="50"></mat-spinner>
                             </div>
-                            <span *ngIf="backendData.light_percentage !== null"><span class="text-7xl"><b>{{backendData.light_percentage}}</b></span><span class="text-lime-500 text-4xl">%</span></span>
+                            <span *ngIf="backendData.light_percentage !== null"><span class="text-7xl"><b>{{backendData.light_percentage}}</b></span>
+                            <span [ngClass]="{'text-red-600' : verifyLightRange() === 'VH' || verifyLightRange() === 'VL' , 'text-lime-500' : verifyLightRange() !== 'VH' && verifyLightRange() !== 'VL'}" class="text-4xl">%</span></span>
+                        </div>
+
+                        <div *ngIf="verifyLightRange() !== ''" class="h-[20%] w-full">
+                            <div *ngIf="verifyLightRange() === 'N'" class="flex w-full text-sm justify-center font-bold  items-center text-lime-500 ">
+                                <span class="material-symbols-outlined">
+                                    verified_user
+                                </span>
+                                <span>Normal light range</span>
+                            </div>
+                            <div *ngIf="verifyLightRange() === 'VH'" class="flex justify-center font-bold items-center text-red-600 ">
+                                <span class="material-symbols-outlined">
+                                    error
+                                </span>
+                                <span>Light is very high for plant</span>
+                            </div>
+                            <div *ngIf="verifyLightRange() === 'VL'" class="flex justify-center font-bold items-center text-red-600 ">
+                                <span class="material-symbols-outlined">
+                                    error
+                                </span>
+                                <span>Light is very low for plant</span>
+                            </div>
+                            <div *ngIf="verifyLightRange() === 'L' || verifyLightRange() === 'H'" class="w-full font-bold flex text-sm justify-center items-center text-orange-600 ">
+                                <span class="material-symbols-outlined">
+                                    report
+                                </span>
+                                <span class="w-full">Light slightly out of range</span>
+                            </div>
                         </div>
                     </div>
                 </div>

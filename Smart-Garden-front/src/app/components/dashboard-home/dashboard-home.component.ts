@@ -39,19 +39,19 @@ export class DashboardHomeComponent implements OnInit {
 
   selectedPlant : plant = {
     plant_name : "",
-    minTemp_day : 0,
-    maxTemp_day : 0,    
-    minTemp_night : 0,
-    maxTemp_night : 0,
-    minHumidity : 0,
-    maxHumidity: 0,
+    minTemp_day : -100,
+    maxTemp_day : -100,    
+    minTemp_night : -100,
+    maxTemp_night : -100,
+    minHumidity : -100,
+    maxHumidity: -100,
     Wind : "",
-    minUVIndex : 0,
-    maxUVIndex : 0,
-    minLight : 0,
-    maxLight : 0,
-    minSoilMoisture : 0,
-    maxSoilMoisture : 0,
+    minUVIndex : -100,
+    maxUVIndex : -100,
+    minLight : -100,
+    maxLight : -100,
+    minSoilMoisture : -100,
+    maxSoilMoisture : -100,
     lastDateOfIrrigation : "",
     lastDateOfFertilizer : "",
     lastDateOfPesticide : "",
@@ -238,6 +238,116 @@ export class DashboardHomeComponent implements OnInit {
     });
   };
 
+  verifyTemperatureRange() : string {
+    let min = -100;
+    let max = -100;
+
+    if(this.isDay()) {
+      max = this.selectedPlant.maxTemp_day;
+      min = this.selectedPlant.minTemp_day;
+    }
+    else if (this.isNight()) {
+      max = this.selectedPlant.maxTemp_night;
+      min = this.selectedPlant.minTemp_night;
+    }
+    if(min=== -100 || max === -100) return '';
+    // console.log("Min : ",min);
+    // console.log("Max : ",max);
+
+    if(this.backendData.temperature !== null){
+      const temp = this.backendData.temperature;
+      if(temp >= min && temp<= max) return 'N'
+      else if (temp < min){
+        const difference = min - temp;
+        if (difference >= 10) return 'VL';
+        else return 'L';
+      }
+      else if (temp > max){
+        const difference = temp - max;
+        if (difference >= 10) return 'VH';
+        else return 'H';
+      }
+    }
+    return '';
+
+  }
+
+  verifyHumidityRange() : string {
+    const max = this.selectedPlant.maxHumidity;
+    const min = this.selectedPlant.minHumidity;
+    if(min=== -100 || max === -100) return '';
+    // console.log("Min : ",min);
+    // console.log("Max : ",max);
+
+
+    if(this.backendData.humidity !== null){
+      const hum = this.backendData.humidity;
+      if(hum >= min && hum<= max) return 'N'
+      else if (hum < min){
+        const difference = min - hum;
+        if (difference >= 10) return 'VL';
+        else return 'L';
+      }
+      else if (hum > max){
+        const difference = hum - max;
+        if (difference >= 10) return 'VH';
+        else return 'H';
+      }
+    }
+    return '';
+
+  }
+
+  verifyLightRange() : string {
+    const max = this.selectedPlant.maxLight;
+    const min = this.selectedPlant.minLight;
+    if(min=== -100 || max === -100) return '';
+    // console.log("Min : ",min);
+    // console.log("Max : ",max);
+
+
+    if(this.backendData.light_percentage !== null){
+      const light = this.backendData.light_percentage;
+      if(light >= min && light<= max) return 'N'
+      else if (light < min){
+        const difference = min - light;
+        if (difference >= 10) return 'VL';
+        else return 'L';
+      }
+      else if (light > max){
+        const difference = light - max;
+        if (difference >= 10) return 'VH';
+        else return 'H';
+      }
+    }
+    return '';
+
+  }
+
+  verifyUVRange() : string {
+    const max = this.selectedPlant.maxUVIndex;
+    const min = this.selectedPlant.minUVIndex;
+    if(min=== -100 || max === -100) return '';
+
+
+    if(this.weatherApiData.uvindex !== null){
+      const uv = this.weatherApiData.uvindex;
+      if(uv >= min && uv<= max) return 'N'
+      else if (uv < min){
+        const difference = min - uv;
+        if (difference >= 3) return 'VL';
+        else return 'L';
+      }
+      else if (uv > max){
+        const difference = uv - max;
+        if (difference >= 3) return 'VH';
+        else return 'H';
+      }
+    }
+    return '';
+
+  }
+
   onDelete(plantName : string) : void {
 
     const deleteDialog = this.dialog.open(ConfirmDialogueComponent, {
@@ -278,6 +388,26 @@ export class DashboardHomeComponent implements OnInit {
               }
             );
             this.getAllPlants();
+            this.selectedPlant = {
+              plant_name : "",
+              minTemp_day : -100,
+              maxTemp_day : -100,    
+              minTemp_night : -100,
+              maxTemp_night : -100,
+              minHumidity : -100,
+              maxHumidity: -100,
+              Wind : "",
+              minUVIndex : -100,
+              maxUVIndex : -100,
+              minLight : -100,
+              maxLight : -100,
+              minSoilMoisture : -100,
+              maxSoilMoisture : -100,
+              lastDateOfIrrigation : "",
+              lastDateOfFertilizer : "",
+              lastDateOfPesticide : "",
+              lastDateOfNutrients : "",
+            };
 
           }
         });

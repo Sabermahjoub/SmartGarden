@@ -23,6 +23,24 @@
   'opsz' 24,
 }
 
+::ng-deep .safe .mat-progress-bar-fill::after {
+  background-color: rgb(40, 190, 40);
+}
+::ng-deep .warning .mat-progress-bar-fill::after {
+  background-color: orange !important;
+}
+::ng-deep .danger .mat-progress-bar-fill::after {
+  background-color: red;
+}
+
+::ng-deep .warning .mat-progress-bar-buffer {
+  background: #b1b1b1;
+}
+
+::ng-deep .warning .mat-progress-bar {
+  border-radius: 2px;
+}
+
 ::ng-deep .custom-progress-bar .mat-progress-bar-fill::after {
   background-color: darkGreen;
 }
