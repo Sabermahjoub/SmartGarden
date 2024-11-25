@@ -17,14 +17,20 @@
                 </span>
             </div>
 
-
-            <div class="p-1 h-[90%] flex">
+            <div class="p-1 h-[90%] flex justify-center items-center" *ngIf="allPlants.length === 0">
+                <span class="flex justify-center items-center text-darkGreen font-bold text-2xl">
+                    <span class="text-4xl material-symbols-outlined">
+                        notification_important
+                    </span>No plants available. Please create one.
+                </span>
+            </div>
+            <div *ngIf="allPlants.length !== 0" class="p-1 h-[90%] flex">
                 <div class="p-2 flex gap-1 overflow-x-auto overflow-y-hidden scrollbar-color">
-                    <mat-card *ngFor="let plant of plantNames" class="bg-white w-32 cursor-pointer h-full flex flex-col items-center justify-center">
+                    <mat-card (click)="selectPlant(plant)" [ngClass]="{ 'bg-lime-400 border-lime-800 font-mono': selectedPlant?.plant_name === plant.plant_name, 'bg-white border-none': selectedPlant?.plant_name !== plant.plant_name}" *ngFor="let plant of allPlants"  class="!border-2 w-32 cursor-pointer h-full flex flex-col items-center justify-center">
                         <mat-card-header class="flex justify-center w-full">
                             <mat-card-title class="flex">
-                                <span class="text-black flex justify-center items-center font-thin">{{plant}}
-                                    <mat-icon (click)="onDelete()" class="text-red-500 text-bg cursor-pointer hover:text-red-700">
+                                <span class="text-black flex justify-center items-center font-thin">{{plant.plant_name}}
+                                    <mat-icon (click)="onDelete(plant.plant_name)" class="text-red-500 text-bg cursor-pointer hover:text-red-700">
                                         delete
                                     </mat-icon>
                                 </span>
@@ -34,7 +40,7 @@
                         <div class="flex justify-center items-center h-[90%] ">
                             <img mat-card-image 
                                 class="h-auto w-full max-w-[90%] max-h-[70%] object-contain"
-                                [src]="'/assets/images/plants/' + plant.toLowerCase() + '.png'" 
+                                [src]="'/assets/images/plants/' + plant.plant_name.toLowerCase() + '.png'" 
                                 [alt]="plant">
                         </div>
                         <!--mat-card-content>

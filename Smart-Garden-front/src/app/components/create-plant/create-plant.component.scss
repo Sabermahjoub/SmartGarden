@@ -40,6 +40,21 @@
     }
 }
 
+::ng-deep .mat-snack-bar-container {
+  top: 0 !important;
+  margin-top: 0 !important;
+  color: white;
+}
+
+::ng-deep .custom-red-style {
+  background-color: rgb(161, 21, 21);
+  font-weight: bold;
+}
+
+::ng-deep .custom-green-style {
+  background-color: rgb(64, 165, 64) !important;
+}
+
 // Sliders
 
 .slider-container {
