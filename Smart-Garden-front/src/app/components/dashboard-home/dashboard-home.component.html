@@ -255,6 +255,33 @@
                             </div>
                             <span *ngIf="weatherApiData.windspeed !== null"><span class="text-7xl"><b>{{weatherApiData.windspeed}}</b></span><span class="text-lime-500 text-4xl">Km/h</span></span>
                         </div>
+                        
+                        <div *ngIf="verifyWindRange() !== ''" class="h-[20%] w-full">
+                            <div *ngIf="verifyWindRange() === 'N'" class="flex w-full text-sm justify-center font-bold  items-center text-lime-500 ">
+                                <span class="material-symbols-outlined">
+                                    verified_user
+                                </span>
+                                <span>Normal wind speed</span>
+                            </div>
+                            <div *ngIf="verifyWindRange() === 'VH'" class="flex justify-center font-bold items-center text-red-600 ">
+                                <span class="material-symbols-outlined">
+                                    error
+                                </span>
+                                <span>Wind speed is very high</span>
+                            </div>
+                            <div *ngIf="verifyWindRange() === 'VL'" class="flex justify-center font-bold items-center text-red-600 ">
+                                <span class="material-symbols-outlined">
+                                    error
+                                </span>
+                                <span>Wind speed is very low</span>
+                            </div>
+                            <div *ngIf="verifyWindRange() === 'L' || verifyWindRange() === 'H'" class="w-full font-bold flex text-sm justify-center items-center text-orange-600 ">
+                                <span class="material-symbols-outlined">
+                                    report
+                                </span>
+                                <span class="w-full">Wind speed out of range</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

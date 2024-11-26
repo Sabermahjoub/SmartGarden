@@ -238,6 +238,37 @@ export class DashboardHomeComponent implements OnInit {
     });
   };
 
+  verifyWindRange() : string {
+
+    let windspeed = -100;
+    if(this.weatherApiData.windspeed !== null){
+      windspeed = this.weatherApiData.windspeed
+    }
+    else return '';
+
+    if (this.selectedPlant.Wind === 'Light') {
+
+      if (windspeed >= 0 && windspeed <= 11) return 'N' ; 
+      if (windspeed > 11 && windspeed <= 28) return 'H' ; 
+      if (windspeed > 28) return 'VH';
+    }
+    if (this.selectedPlant.Wind === 'Moderate') {
+
+      //if (windspeed >= 0 && windspeed < 10) return 'VL' ; 
+      if (windspeed >= 0 && windspeed < 11) return 'L' ; 
+      if (windspeed >= 11 && windspeed <= 28) return 'N' ; 
+      if (windspeed > 28 && windspeed <= 50) return 'H' ; 
+      if (windspeed > 50) return 'VH' ; 
+    }
+    if (this.selectedPlant.Wind === 'High') {
+
+      if (windspeed >= 0 && windspeed <= 5) return 'VL' ;
+      if (windspeed > 5 && windspeed < 28) return 'L' ; 
+      if (windspeed >= 28) return 'N' ;
+    }
+    return '';
+  }
+
   verifyTemperatureRange() : string {
     let min = -100;
     let max = -100;

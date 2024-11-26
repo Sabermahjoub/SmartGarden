@@ -19,6 +19,20 @@
 CREATE DATABASE IF NOT EXISTS `gardenpy` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `gardenpy`;
 
+CREATE TABLE IF NOT EXISTS `task` (
+  `task_id` INT NOT NULL AUTO_INCREMENT,
+  `task_name` VARCHAR(30) NOT NULL, 
+  `description` VARCHAR(255) NOT NULL,  
+  `task_type` VARCHAR(50) NOT NULL, 
+  `starting_time` VARCHAR(10),
+  `ending_time` VARCHAR(10),
+  `plant` VARCHAR(50) NOT NULL, 
+  `done` BOOLEAN NOT NULL,
+
+  PRIMARY KEY (`task_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=142 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
 -- Dumping structure for table gardenpy.sensor_data
 CREATE TABLE IF NOT EXISTS `sensor_data` (
   `id` int NOT NULL AUTO_INCREMENT,
