@@ -1,0 +1,12 @@
+::ng-deep table.mat-table {
+    width: 100%;
+    height: 100%;
+    padding : 10px;
+}
+
+mat-header-row, mat-row {
+    height: auto;
+}
+mat-header-cell {
+    padding: 16px; /* Default Material padding */
+}
