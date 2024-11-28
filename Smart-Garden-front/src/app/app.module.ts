@@ -31,6 +31,8 @@ import { CreatePlantComponent } from './components/create-plant/create-plant.com
 import { MatSliderModule } from '@angular/material/slider';
 import { PredictionComponent } from './components/prediction/prediction.component';
 import { ConfirmDialogueComponent } from './components/confirm-dialogue/confirm-dialogue.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   declarations: [
@@ -66,7 +68,9 @@ import { ConfirmDialogueComponent } from './components/confirm-dialogue/confirm-
     MatSelectModule,
     MatChipsModule,
     MatTooltipModule,
-    MatSliderModule
+    MatSliderModule,
+    MatTableModule,
+    MatSortModule
   ],
   providers: [],
   bootstrap: [AppComponent]
