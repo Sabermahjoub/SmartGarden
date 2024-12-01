@@ -33,11 +33,37 @@ db_config = {
     'password': '',
     'database': 'gardenpy'
 }
+# MQTT configuration
+MQTT_BROKER = "5fbcd303cf5d4f4aa437ee13fb50fd99.s1.eu.hivemq.cloud"
+MQTT_PORT = 8883
+MQTT_USERNAME = "domotique"
+MQTT_PASSWORD = "Domotique123"
 
 # Callback to handle incoming messages
 def on_message(client, userdata, message):
     global received_data
     received_data = message.payload.decode()
+
+
+# Login route
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    
+    username = data.get('username')
+    password = data.get('password')
+    
+    if not username or not password:
+        return jsonify({"error": "Username and password are required."}), 400
+
+    if username == MQTT_USERNAME and password == MQTT_PASSWORD:
+        try:
+            
+            return jsonify({"message": "Login successful and connected to MQTT broker."}), 200
+        except Exception as e:
+            return jsonify({"error": f"MQTT connection failed: {str(e)}"}), 500
+    else:
+        return jsonify({"error": "Invalid username or password."}), 401
 
 @app.route('/getData', methods=['GET'])
 def get_data():
