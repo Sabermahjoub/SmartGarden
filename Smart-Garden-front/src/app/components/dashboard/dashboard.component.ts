@@ -4,7 +4,7 @@ import { DashboardHomeComponent } from '../dashboard-home/dashboard-home.compone
 import { LogsComponent } from '../logs/logs.component';
 import { Subject, takeUntil } from 'rxjs';
 import { PredictionComponent } from '../prediction/prediction.component';
-
+import { Router } from '@angular/router';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 @Component({
   selector: 'app-dashboard',
@@ -19,7 +19,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor() { }
+  constructor(private router : Router) { }
 
   openHome() : void {
     this.step= 'dashboard-home';
@@ -42,6 +42,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   onParentVariableUpdated(updatedValue: string) {
     this.step = updatedValue;
+  }
+
+  logout() : void {
+    localStorage.removeItem('auth');
+    this.router.navigate(['/login']);
   }
 
 }
