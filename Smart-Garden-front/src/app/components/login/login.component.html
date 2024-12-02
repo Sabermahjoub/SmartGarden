@@ -21,25 +21,25 @@
             
             <div class="w-full px-4">
                 <mat-form-field class="w-full" appearance="fill">
-                    <mat-label>Server address</mat-label>
-                    <input formControlName="serverAddress" matInput placeholder="http://example.com" required>
-                    <mat-error *ngIf="loginForm.get('serverAddress')?.hasError('required')">
-                        <span class="font-bold text-base text-red-700">Server address is required.</span>
+                    <mat-label>Username</mat-label>
+                    <input formControlName="username" matInput placeholder="farmer1332" required>
+                    <mat-error *ngIf="loginForm.get('username')?.hasError('required')">
+                        <span class="font-bold text-base text-red-700">Username is required.</span>
                     </mat-error>
-                    <mat-error *ngIf="loginForm.get('serverAddress')?.hasError('pattern')">
-                        <span class="font-bold text-base text-red-700">Please enter a valid server address (e.g., http://example.com).</span>
+                    <mat-error *ngIf="loginForm.get('username')?.hasError('pattern')">
+                        <span class="font-bold text-base text-red-700">Please enter a valid username.</span>
                     </mat-error>
                 </mat-form-field>
             </div>
 
             <div class="w-full px-4">
                 <mat-form-field class="w-full custom-outline" appearance="fill">
-                    <mat-label>Enter the server password</mat-label>
-                    <input formControlName="serverPassword" matInput [type]="hide ? 'password' : 'text'" required>
-                    <mat-error *ngIf="loginForm.get('serverPassword')?.hasError('required')">
-                        <span class="font-bold text-base text-red-700">Server password is required.</span>
+                    <mat-label>Enter password</mat-label>
+                    <input formControlName="password" matInput [type]="hide ? 'password' : 'text'" required>
+                    <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+                        <span class="font-bold text-base text-red-700">Password is required.</span>
                     </mat-error>
-                    <mat-error *ngIf="loginForm.get('serverPassword')?.hasError('minlength')">
+                    <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
                         <span class="font-bold text-base text-red-700">Minimal length of password is 6!</span>
                     </mat-error>
                     <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
