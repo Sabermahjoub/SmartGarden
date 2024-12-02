@@ -59,13 +59,13 @@ client.on_message = on_message
 client.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS)
 
 # Set username and password for MQTT connection
-client.username_pw_set("domotique", "Domotique123")
+client.username_pw_set("garden", "Garden123")
 
 # Connect to MQTT broker
 client.connect("5fbcd303cf5d4f4aa437ee13fb50fd99.s1.eu.hivemq.cloud", 8883)
 
 # Subscribe to the topic
-client.subscribe("domotique/#", qos=0)
+client.subscribe("garden/#", qos=0)
 
 # Start the MQTT loop to process messages
 client.loop_forever()

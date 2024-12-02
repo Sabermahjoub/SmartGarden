@@ -36,8 +36,8 @@ db_config = {
 # MQTT configuration
 MQTT_BROKER = "5fbcd303cf5d4f4aa437ee13fb50fd99.s1.eu.hivemq.cloud"
 MQTT_PORT = 8883
-MQTT_USERNAME = "domotique"
-MQTT_PASSWORD = "Domotique123"
+MQTT_USERNAME = "garden"
+MQTT_PASSWORD = "Garden123"
 
 # Callback to handle incoming messages
 def on_message(client, userdata, message):
