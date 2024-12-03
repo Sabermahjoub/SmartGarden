@@ -12,6 +12,8 @@ import { DateHourTempService } from 'src/app/services/date-hour-temp.service';
 })
 export class PredictionComponent implements OnInit {
 
+  //imageURL : string = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS490zh_FBef-1c-XUQM9MmCTrSj_7wY-wwWA&s";
+
   soil_type = [
     { name: "Loam", value: 0 },
     { name: "Sandy", value: 1 },
@@ -62,6 +64,22 @@ export class PredictionComponent implements OnInit {
       // send to backend to predicct
     });
 
+  };
+
+  imageSrc: string | ArrayBuffer | null = null;
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        this.imageSrc = reader.result; // Base64 image data
+      };
+
+      reader.readAsDataURL(file); // Read the file as a data URL
+    }
   }
 
 }
