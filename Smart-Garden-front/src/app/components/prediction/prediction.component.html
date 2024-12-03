@@ -85,6 +85,49 @@
         </form>
     </div>
 
+    <div class="bg-darkGrey flex flex-col p-3 h-full w-[50%]">
+        <!-- header -->
+        <div class="p-2 m-0 gap-1 flex flex-col w-full h-[30%]">
+            <div class="flex justify-center items-center">
+                <p class="flex gap-1 justify-center items-center text-center font-semibold text-darkGreen text-3xl">
+                    <mat-spinner *ngIf="loading" color="accent" diameter="28"></mat-spinner>
+                    Image classification
+                </p>
+            </div>
+            <div class="p-0 h-[55%] bg-customGrey flex justify-center items-center">
+                <p class="text-center font-extralight text-base text-black"><b class="text-lightGreen font-extrabold">Note :</b> Choose the plant image you would like to predict. <br>
+                    The model predicts whether the plant is <b class="text-lightGreen font-semibold">healthy, in early blight or in late blight.</b>
+                </p>
+            </div>
 
-    <div class="bg-darkGrey h-full w-[50%]"></div>
+        </div>
+
+        <div class="!h-[75%] flex flex-col justify-center items-center gap-1">
+            <div class="h-[20%] file-input-wrapper">
+                <label for="fileInput" class="custom-label">Choose file</label>
+                
+                <!-- Hidden File Input -->
+                <input 
+                type="file" 
+                id="fileInput" 
+                accept="image/*" 
+                (change)="onFileSelected($event)" 
+                hidden 
+                />
+            </div>
+
+            <div *ngIf="imageSrc">
+                <img [src]="imageSrc" alt="Selected Image" />
+            </div>
+        </div>
+
+         <!-- Submit -->
+         <div class="flex justify-center mb-2 items-center px-4">
+            <button (click)="onSubmit()" [disabled]="predictionForm.invalid" class="w-full mb-0 justify-center items-center !bg-lightGreen" type="submit" mat-raised-button>
+                <div class="flex justify-center items-center">
+                    <span class="ml-2">Predict</span>
+                </div>
+            </button>
+        </div>
+    </div>
 </div>
