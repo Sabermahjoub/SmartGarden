@@ -46,7 +46,9 @@ export class DateHourTempService {
           const data : backendData = {
             temperature : response.data.temperature ? parseFloat(response.data.temperature.toFixed(1))  : null,
             humidity : response.data.humidity ? parseFloat(response.data.humidity.toFixed(1))  : null,
-            light_percentage : response.data.light_percentage ? parseFloat(response.data.light_percentage.toFixed(1)) : null
+            light_percentage : response.data.light_percentage ? parseFloat(response.data.light_percentage.toFixed(1)) : null,
+            moisture : response.data.moisture ? parseFloat(response.data.moisture.toFixed(1)) : 0
+
           };
           console.log("Backend data :", data);
           return data;
@@ -57,7 +59,8 @@ export class DateHourTempService {
         const data : backendData = {
           temperature : null,
           humidity : null,
-          light_percentage : null
+          light_percentage : null,
+          moisture: null
         };
         return of(data);
       })

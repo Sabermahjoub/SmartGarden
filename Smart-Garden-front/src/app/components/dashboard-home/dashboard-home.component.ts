@@ -70,7 +70,8 @@ export class DashboardHomeComponent implements OnInit {
   backendData : backendData = {
     temperature : null,
     humidity : null,
-    light_percentage : null
+    light_percentage : null,
+    moisture:null
   }
   weatherApiData: WeatherApiData = {
     sunrise : null,

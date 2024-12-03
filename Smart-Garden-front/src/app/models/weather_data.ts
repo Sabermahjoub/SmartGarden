@@ -12,7 +12,8 @@ export interface WeatherApiData {
 export interface backendData {
     humidity : number | null ,
     temperature : number | null,
-    light_percentage : number | null
+    light_percentage : number | null,
+    moisture: number  | null
 }
 
 export function fahrenheitToCelsius(fahrenheit: number): number {
