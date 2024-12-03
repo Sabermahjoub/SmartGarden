@@ -37,13 +37,21 @@ bell = bytearray([0x04, 0x0E, 0x0E, 0x0E, 0x1F, 0x00, 0x04, 0x00])
 I2C_ADDR = 0x27
 i2c = SoftI2C(scl=Pin(22), sda=Pin(21), freq=10000)
 lcd = I2cLcd(i2c, I2C_ADDR, 2, 16)
-lcd.custom_char(0, heart)
-lcd.custom_char(1, bell)
-lcd.putstr(chr(0) + " Domotique " + chr(0))
+# lcd.custom_char(0, heart)
+# lcd.custom_char(1, bell)
+lcd.putstr( " Smart Garden " )
 
 # DHT11 sensor
 sensor = dht.DHT11(Pin(15))
+# Soil moisture sensor
+soil = ADC(Pin(35))
+m = 100
 
+min_moisture=0
+max_moisture=4095
+
+soil.atten(ADC.ATTN_11DB)       #Full range: 3.3v
+soil.width(ADC.WIDTH_12BIT)     #range 0 to 4095
 # Photoresistor (LDR) on Pin 34
 ldr = ADC(Pin(34))
 ldr.atten(ADC.ATTN_11DB)  # Range 0-3.3V
@@ -62,7 +70,13 @@ while True:
     # Read light intensity from LDR
     light_intensity = ldr.read()  # Value between 0 and 4095
     light_percentage = (light_intensity / 4095) * 100  # Convert to percentage
-
+    # read soil moisture:
+    
+    soil.read()
+    time.sleep(2)
+    m = (max_moisture-soil.read())*100/(max_moisture-min_moisture)
+    moisture = '{:.1f} %'.format(m)
+    print('Soil Moisture:', moisture)
     # Print to console
     print(f"Temperature: {temperature} Celsius")
     print(f"Humidity: {humidity} %")
@@ -83,9 +97,10 @@ while True:
     message = ujson.dumps({
         "temp": temperature,
         "humidity": humidity,
-        "light_percentage": light_percentage
+        "light_percentage": light_percentage,
+        "moisture":m
     })
-    client.publish("domotique", message)
+    client.publish("garden", message)
     
     time.sleep(2)
 

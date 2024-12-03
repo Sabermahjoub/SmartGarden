@@ -36,12 +36,14 @@ def on_message(client, userdata, msg):
         temperature = payload['temp']
         humidity = payload['humidity']
         light_percentage = payload['light_percentage']
+        moisture = payload['moisture']
+        
 
-        print(f"Temperature: {temperature}, Humidity: {humidity}, Light: {light_percentage}%")
+        print(f"Temperature: {temperature}, Humidity: {humidity}, Light: {light_percentage}%, Soil Moisture: {moisture}%")
 
         # Insert data into MySQL
-        insert_query = "INSERT INTO sensor_data (temperature, humidity, light_percentage) VALUES (%s, %s, %s)"
-        cursor.execute(insert_query, (temperature, humidity, light_percentage))
+        insert_query = "INSERT INTO sensor_data (temperature, humidity, light_percentage,moisture) VALUES (%s, %s, %s,%s)"
+        cursor.execute(insert_query, (temperature, humidity, light_percentage,moisture))
         db.commit()
         print("Data inserted into MySQL")
     
