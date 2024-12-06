@@ -39,6 +39,60 @@ MQTT_PORT = 8883
 MQTT_USERNAME = "garden"
 MQTT_PASSWORD = "Garden123"
 
+
+import joblib
+import numpy as np
+import os
+
+# Get the directory of the current script
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Resolve the relative path
+file_path1 = os.path.join(current_dir, 'IOTProjet/scaler.pkl')
+file_path2 = os.path.join(current_dir, 'IOTProjet/model.pkl')
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    if request.method == 'POST':
+        # Retrieve JSON data from the request body
+        try:
+            data = request.get_json()  # Parse the JSON payload
+            
+            # Extract values from the JSON object
+            soil_type = data['soil_type']
+            watering_frequency = data['watering_frequency']
+            fertilizer_type = data['fertilizer_type']
+            light_intensity = data['light_intensity']
+            humidity = data['humidity']
+            temperature = data['temperature']
+            
+        except KeyError as e:
+            return jsonify({'error': f'Missing key: {str(e)}'}), 400
+        except Exception as e:
+            return jsonify({'error': f'Invalid data: {str(e)}'}), 400
+
+        # Prepare the data as a NumPy array
+        data_array = np.array([
+            soil_type, watering_frequency, fertilizer_type,
+            light_intensity, humidity, temperature
+        ])
+
+        # Load the scaler and model
+        with open(file_path1, 'rb') as f:
+            scaler = joblib.load(f)
+        with open(file_path2, 'rb') as f:
+            clf = joblib.load(f)
+
+        # Transform and predict
+        data_scaled = scaler.transform(data_array.reshape(1, -1))
+        prediction = clf.predict(data_scaled)
+
+        return jsonify({'prediction': int(prediction)})
+
+    else:
+        return jsonify({'error': 'Method not allowed'}), 405
+
+
 # Callback to handle incoming messages
 def on_message(client, userdata, message):
     global received_data
