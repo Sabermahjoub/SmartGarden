@@ -4,6 +4,7 @@ import { task } from 'src/app/models/task';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { PlantsService } from 'src/app/services/plants.service';
+import { TasksService } from 'src/app/services/tasks.service';
 
 @Component({
   selector: 'app-create-task',
@@ -17,7 +18,7 @@ export class CreateTaskComponent implements OnInit {
   selectedTaskType : string = '';
 
   plants : any[] = [];
-  selectedPlant : string = "All";
+  selectedPlant : string = "";
 
   task_types: string[] = ["Pesticide", "Fertilizer", "Watering", "Other"];
   taskTypeControl = new FormControl('');
@@ -25,7 +26,8 @@ export class CreateTaskComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<CreateTaskComponent>,
      private fb : FormBuilder,
      private snackBar: MatSnackBar,
-     private plantsService : PlantsService
+     private plantsService : PlantsService,
+     private taskService : TasksService
   ) {}
 
   closeDialog(): void {
@@ -48,19 +50,41 @@ export class CreateTaskComponent implements OnInit {
   onSubmit() {
     this.loading= true;
     if (this.taskForm.valid) {
-      console.log(this.taskForm.value);
-      this.snackBar.open(
-        'New task successfully created !',
-        'Close',
-        {
-          duration: 3000,
-          horizontalPosition: 'center',
-          verticalPosition: 'top',
-          panelClass: ['custom-style'],
+      this.taskService.createTask(this.taskForm.value).subscribe(response => {
+        if (response.error) {
+          this.snackBar.open(
+            'Error occurred while trying to create new task. Try again !',
+            'Close',
+            {
+              duration: 4000,
+              horizontalPosition: 'center',
+              verticalPosition: 'top',
+              panelClass: ['custom-red-style'],
+            }
+          );
+          setTimeout(() => {
+            this.loading = false;
+          }, 1000); 
         }
-      );
+        else {
+          this.snackBar.open(
+            'Task successfully added.',
+            'Close',
+            {
+              duration: 3000,
+              horizontalPosition: 'center',
+              verticalPosition: 'top',
+              panelClass: ['custom-green-style'],
+            }
+          );
+          setTimeout(() => {
+            this.loading = false;
+          }, 1000); 
+        }
+  
+      })
+      
     } else {
-      //console.log(this.taskForm.get('task_type'));
       console.log('Task Form is invalid');
     }
   }
@@ -71,14 +95,14 @@ export class CreateTaskComponent implements OnInit {
   }
 
   chipChange(plant : any) {
-    this.taskForm.get('plant')?.setValue(plant.name);
-    this.selectedPlant = plant.name;
+    this.taskForm.get('plant')?.setValue(plant.plant_name, { emitEvent: false });
+    this.selectedPlant = plant.plant_name;
   }
 
   ngOnInit(): void {
     this.getAllPlantsNames();
     this.taskForm = this.fb.group({
-      plant : ['All', [Validators.required]],
+      plant : ['', [Validators.required]],
       task_name: ['', [Validators.required,Validators.pattern(/^[a-zA-Z_][a-zA-Z0-9_]*$/)  ]], 
       description: ['', [ Validators.minLength(6)]], 
       task_type : ['Other', [Validators.required]],
