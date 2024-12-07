@@ -8,21 +8,6 @@ import mysql.connector
 app = Flask(__name__)
 
 CORS(app, resources={r"/*": {"origins": "*"}})
-# CORS(app, resources={
-#     r"/*": {
-#         "origins": "http://localhost:4200",  # Allow requests only from your Angular app
-#         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-#         "allow_headers": ["Content-Type", "Authorization"]
-#     }
-# })
-# @app.before_request
-# def handle_options_request():
-#     if request.method == "OPTIONS":
-#         response = app.make_response("")
-#         response.headers["Access-Control-Allow-Origin"] = "http://localhost:4200"
-#         response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
-#         response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-#         return response
 
 
 received_data = None
@@ -40,18 +25,9 @@ MQTT_USERNAME = "garden"
 MQTT_PASSWORD = "Garden123"
 
 
-import joblib
-import numpy as np
-import os
 
-# Get the directory of the current script
-current_dir = os.path.dirname(os.path.abspath(__file__))
 
-# Resolve the relative path
-# file_path1 = os.path.join(current_dir, './scaler.pkl')
-# file_path2 = os.path.join(current_dir, './model.pkl')
-
-from flask import Flask, request, jsonify
+# ML imports
 import numpy as np
 import joblib
 import os
@@ -92,98 +68,18 @@ FERTILIZER_TYPE_MAPPING = {
     # Add other fertilizer types as needed
 }
 
-def validate_input(data):
-    """Validate input data and return preprocessed values."""
-    errors = []
-    
-    # Validate categorical variables
-    try:
-        soil_type = SOIL_TYPE_MAPPING.get(str(data.get('soil_type')).lower())
-        if soil_type is None:
-            errors.append(f"Invalid soil_type. Must be one of: {list(SOIL_TYPE_MAPPING.keys())}")
-    except:
-        errors.append("Invalid soil_type format")
-        
-    try:
-        fertilizer_type = FERTILIZER_TYPE_MAPPING.get(str(data.get('fertilizer_type')).lower())
-        if fertilizer_type is None:
-            errors.append(f"Invalid fertilizer_type. Must be one of: {list(FERTILIZER_TYPE_MAPPING.keys())}")
-    except:
-        errors.append("Invalid fertilizer_type format")
-    
-    # Validate numerical variables
-    for feature, (min_val, max_val) in VALID_RANGES.items():
-        try:
-            value = float(data.get(feature))
-            if not min_val <= value <= max_val:
-                errors.append(f"{feature} must be between {min_val} and {max_val}")
-        except:
-            errors.append(f"Invalid {feature} format")
-    
-    if errors:
-        return None, errors
-    
-    # Create feature array in correct order
-    features = np.array([
-        soil_type,
-        float(data['watering_frequency']),
-        fertilizer_type,
-        float(data['light_intensity']),
-        float(data['humidity']),
-        float(data['temperature'])
-    ])
-    
-    return features, None
-
-def ML_predict(data_array):
-    import numpy as np
-    import pandas as pd
-    path = os.path.join(current_dir, './plant_growth_data.csv')
-    data = pd.read_csv(path,  encoding = "ISO-8859-1")
-    df=data.copy()
-    from sklearn.model_selection import train_test_split
-
-    trainset, testset = train_test_split(df, test_size=0.2, random_state=0)
-    df['Water_Frequency'].dtype 
-
-    for i in list(df.columns) :
-        if pd.api.types.is_object_dtype(df[i]) :
-            df[i]=df[i].astype('category')
-            df[i]=df[i].cat.codes
-
-
-    def preprocessing(df):
-        
-        for i in list(df.columns) :
-            if pd.api.types.is_object_dtype(df[i]) :
-                df[i]=df[i].astype('category')
-                df[i]=df[i].cat.codes
-
-        
-        X = df.drop('Growth_Milestone', axis=1)
-        y = df['Growth_Milestone']
-                
-        return X, y
-    X_train, y_train = preprocessing(trainset)
-    X_test, y_test = preprocessing(testset)
-
-    from sklearn.linear_model import LogisticRegressionCV
-
-    clf = LogisticRegressionCV(cv=10, random_state=0,scoring='accuracy', penalty='l2').fit( X_train, y_train)
-    y_pred=clf.predict(X_test)
-
-
-    # Prédiction et probabilités
-    X = data_array.reshape(-1, 1)
-    y_pred = clf.predict(X.T)
-    return y_pred[0]
+# Load the model when the application starts
+# Get the directory of the current script
+current_dir = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(current_dir, './ml_model.pkl')
+clf = joblib.load(model_path)
 
 @app.route('/predict', methods=['POST'])
 def predict():
     if request.method == 'POST':
         try:
             data = request.get_json()
-            
+
             # Extract values from the JSON object
             soil_type = data['soil_type']
             watering_frequency = data['watering_frequency']
@@ -191,20 +87,21 @@ def predict():
             light_intensity = data['light_intensity']
             humidity = data['humidity']
             temperature = data['temperature']
-            
+
             # Prepare the data as a NumPy array
             data_array = np.array([
-                soil_type, light_intensity, watering_frequency ,
+                soil_type, light_intensity, watering_frequency,
                 fertilizer_type, temperature, humidity
-            ]) 
-            result = int(ML_predict(data_array))
-            return jsonify({'prediction' : result})
+            ])
+
+            # Make a prediction using the loaded model
+            result = int(clf.predict(data_array.reshape(1, -1))[0])
+            return jsonify({'prediction': result})
 
         except Exception as e:
             print(f"Error during prediction: {str(e)}")
             return jsonify({'error': str(e)}), 500
     return jsonify({'error': 'Method not allowed'}), 405
-
 
 # Callback to handle incoming messages
 def on_message(client, userdata, message):
