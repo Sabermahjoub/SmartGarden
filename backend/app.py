@@ -140,6 +140,212 @@ def get_data():
     except Exception as e:
         return jsonify({'error': f'An error occurred: {str(e)}'})
 
+@app.route('/getTasks', methods=['GET'])
+def get_tasks():
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor(dictionary=True) 
+        query = "SELECT * FROM task order by id desc LIMIT 1 "
+        cursor.execute(query)
+        result = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        if result:
+            return jsonify({'data': result})
+        else:
+            return jsonify({'message': 'No data found in the tasks table'})
+    
+    except mysql.connector.Error as err:
+        return jsonify({'error': f'Database error: {err}'})
+    
+    except Exception as e:
+        return jsonify({'error': f'An error occurred: {str(e)}'})
+@app.route('/deleteTask/<task_id>', methods=['DELETE'])
+def delete_task(task_id):
+    # test w/ curl -X DELETE "http://127.0.0.1:5000/deleteTask/111"
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+
+        query = "DELETE FROM task WHERE id = %s"
+        cursor.execute(query, (task_id,))
+        conn.commit()
+
+        if cursor.rowcount > 0:
+            response = {"message": f"Task '{task_id}' deleted successfully."}
+            status_code = 200
+        else:
+            response = {"error": f"PlTaskant '{task_id}' not found."}
+            status_code = 404
+
+        cursor.close()
+        conn.close()
+        return jsonify(response), status_code
+
+    except mysql.connector.Error as err:
+        return jsonify({"error": f"Database error: {err}"}), 500
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+@app.route('/addLog', methods=['POST'])
+def add_log():
+    try:
+        data = request.json
+        required_fields = [
+            "id", "plant_name", "operation", "date"
+        ]
+        
+        missing_fields = [field for field in required_fields if field not in data]
+        if missing_fields:
+            return jsonify({'error': f'Missing fields: {", ".join(missing_fields)}'}), 400
+        
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+        
+        query = """
+        INSERT INTO logs (id,
+            plant_name, operation, date
+        ) VALUES (%s, %s, %s, %s)
+        """
+        
+        values = (
+            data['id'], data['plant_name'], data['operation'], 
+            data['date']
+        )
+        
+        cursor.execute(query, values)
+        conn.commit()
+        
+        cursor.close()
+        conn.close()
+        
+        return jsonify({'message': 'Log added successfully'}), 201
+    
+    except mysql.connector.Error as err:
+        return jsonify({'error': f'Database error: {err}'}), 500
+    
+    except Exception as e:
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500   
+
+@app.route('/addTask', methods=['POST'])
+def add_task():
+    try:
+        data = request.json
+        required_fields = [
+            "task_name", "description", "task_type",
+            "starting_time", "ending_time", "plant", "done"
+        ]
+        
+        missing_fields = [field for field in required_fields if field not in data]
+        if missing_fields:
+            return jsonify({'error': f'Missing fields: {", ".join(missing_fields)}'}), 400
+        
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+        
+        query = """
+        INSERT INTO task (
+            task_name, description, task_type, starting_time,
+            ending_time, plant, done
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """
+        
+        values = (
+            data['task_name'], data['description'], data['task_type'],
+            data['starting_time'], data['ending_time'], data['plant'],
+            int(data['done'])  # Convert to integer for TINYINT field
+        )
+        
+        cursor.execute(query, values)
+        conn.commit()
+        
+        cursor.close()
+        conn.close()
+        
+        return jsonify({'message': 'Task created successfully'}), 201
+    
+    except mysql.connector.Error as err:
+        return jsonify({'error': f'Database error: {err}'}), 500
+    
+    except Exception as e:
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
+
+@app.route('/updateTaskStatus/<int:task_id>', methods=['PUT'])
+def update_task_status(task_id):
+    try:
+        done = request.json.get('done') # 1 or 0
+        
+        if done not in [0, 1]:
+            return jsonify({'error': "'done' must be 0 or 1"}), 400
+        
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+        
+        query = "UPDATE task SET done = %s WHERE task_id = %s"
+        cursor.execute(query, (done, task_id))
+        conn.commit()
+        
+        if cursor.rowcount == 0:
+            return jsonify({'error': f'Task with task_id {task_id} not found'}), 404
+        
+        cursor.close()
+        conn.close()
+        
+        return jsonify({'message': 'Task status updated successfully'}), 200
+    
+    except mysql.connector.Error as err:
+        return jsonify({'error': f'Database error: {err}'}), 500
+    
+    except Exception as e:
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
+
+@app.route('/getLogs', methods=['GET'])
+def get_logs():
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor(dictionary=True) 
+        query = "SELECT * FROM logs order by id desc LIMIT 1 "
+        cursor.execute(query)
+        result = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        if result:
+            return jsonify({'data': result})
+        else:
+            return jsonify({'message': 'No data found in the logs table'})
+    
+    except mysql.connector.Error as err:
+        return jsonify({'error': f'Database error: {err}'})
+    
+    except Exception as e:
+        return jsonify({'error': f'An error occurred: {str(e)}'})
+
+@app.route('/deleteLog/<log_id>', methods=['DELETE'])
+def delete_log(task_id):
+    # test w/ curl -X DELETE "http://127.0.0.1:5000/deleteLog/111"
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+
+        query = "DELETE FROM task WHERE id = %s"
+        cursor.execute(query, (task_id,))
+        conn.commit()
+
+        if cursor.rowcount > 0:
+            response = {"message": f"Task '{task_id}' deleted successfully."}
+            status_code = 200
+        else:
+            response = {"error": f"PlTaskant '{task_id}' not found."}
+            status_code = 404
+
+        cursor.close()
+        conn.close()
+        return jsonify(response), status_code
+
+    except mysql.connector.Error as err:
+        return jsonify({"error": f"Database error: {err}"}), 500
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 # Database configuration
 db_config = {
