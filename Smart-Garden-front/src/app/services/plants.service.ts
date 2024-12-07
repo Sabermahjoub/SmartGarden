@@ -44,6 +44,21 @@ export class PlantsService {
     
   };
 
+  getAllPlantsNames() : Observable<any>{
+    return this.http.get(`${this.plantApiUrl}/getPlantsNames`, { responseType: 'json' }).pipe(
+      map( 
+        (response :any) => {
+          console.log("Normal get Plants response : ", response);
+          return response;
+        }
+      ), 
+      catchError((error :any) => {
+        console.error(error);
+        return of(error);
+      })
+    );
+  }
+
   getAllPlants() : Observable<any>{
     return this.http.get(`${this.plantApiUrl}/getPlants`, { responseType: 'json' }).pipe(
       map( 

@@ -10,3 +10,15 @@ mat-header-row, mat-row {
 mat-header-cell {
     padding: 16px; /* Default Material padding */
 }
+
+::ng-deep .custom-red-style {
+    background-color: rgb(161, 21, 21);
+    font-weight: bold;
+}
+  
+::ng-deep .custom-style {
+    background-color: rgb(64, 165, 64);
+}
+::ng-deep .mat-simple-snackbar-action > button {
+    color: white;
+}

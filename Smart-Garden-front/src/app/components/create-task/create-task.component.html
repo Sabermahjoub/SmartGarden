@@ -20,13 +20,13 @@
             <div class="h-[10%] p-0 !m-0 w-full px-4">
                 <mat-chip-list formControlName="plant" class="!mb-0" #chipList>
                     <mat-chip 
-                        [ngClass]="{'!bg-green-900': isSelected(plant.name)}" 
-                        [value]="plant.name" 
+                        [ngClass]="{'!bg-green-900': isSelected(plant.plant_name)}" 
+                        [value]="plant.plant_name" 
                         (click)="chipChange(plant)"
                         class="!bg-lightGreen min-w-[10%] max-w-[20%]" 
                         *ngFor="let plant of plants"
                     >
-                      <span class="flex justify-center items-center">{{plant.name}}</span>
+                      <span class="flex justify-center items-center">{{plant.plant_name}}</span>
                     </mat-chip>
                 </mat-chip-list>
             </div>
