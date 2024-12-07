@@ -48,15 +48,98 @@ import os
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Resolve the relative path
-file_path1 = os.path.join(current_dir, 'IOTProjet/scaler.pkl')
-file_path2 = os.path.join(current_dir, 'IOTProjet/model.pkl')
+file_path1 = os.path.join(current_dir, './scaler.pkl')
+file_path2 = os.path.join(current_dir, './model.pkl')
+
+from flask import Flask, request, jsonify
+import numpy as np
+import joblib
+import os
+from sklearn.preprocessing import StandardScaler
+import warnings
+warnings.filterwarnings('ignore')
+
+# Feature names and expected ranges
+FEATURE_NAMES = [
+    'soil_type',
+    'watering_frequency',
+    'fertilizer_type',
+    'light_intensity',
+    'humidity',
+    'temperature'
+]
+
+# Expected ranges for numerical features
+VALID_RANGES = {
+    'watering_frequency': (1, 10),
+    'light_intensity': (0, 100),
+    'humidity': (0, 100),
+    'temperature': (15, 35)
+}
+
+# Mapping for categorical variables (you'll need to fill these based on your training data)
+SOIL_TYPE_MAPPING = {
+    'clay': 0,
+    'loam': 1,
+    'sandy': 2
+    # Add other soil types as needed
+}
+
+FERTILIZER_TYPE_MAPPING = {
+    'organic': 0,
+    'chemical': 1,
+    'mixed': 2
+    # Add other fertilizer types as needed
+}
+
+def validate_input(data):
+    """Validate input data and return preprocessed values."""
+    errors = []
+    
+    # Validate categorical variables
+    try:
+        soil_type = SOIL_TYPE_MAPPING.get(str(data.get('soil_type')).lower())
+        if soil_type is None:
+            errors.append(f"Invalid soil_type. Must be one of: {list(SOIL_TYPE_MAPPING.keys())}")
+    except:
+        errors.append("Invalid soil_type format")
+        
+    try:
+        fertilizer_type = FERTILIZER_TYPE_MAPPING.get(str(data.get('fertilizer_type')).lower())
+        if fertilizer_type is None:
+            errors.append(f"Invalid fertilizer_type. Must be one of: {list(FERTILIZER_TYPE_MAPPING.keys())}")
+    except:
+        errors.append("Invalid fertilizer_type format")
+    
+    # Validate numerical variables
+    for feature, (min_val, max_val) in VALID_RANGES.items():
+        try:
+            value = float(data.get(feature))
+            if not min_val <= value <= max_val:
+                errors.append(f"{feature} must be between {min_val} and {max_val}")
+        except:
+            errors.append(f"Invalid {feature} format")
+    
+    if errors:
+        return None, errors
+    
+    # Create feature array in correct order
+    features = np.array([
+        soil_type,
+        float(data['watering_frequency']),
+        fertilizer_type,
+        float(data['light_intensity']),
+        float(data['humidity']),
+        float(data['temperature'])
+    ])
+    
+    return features, None
 
 @app.route('/predict', methods=['POST'])
 def predict():
     if request.method == 'POST':
-        # Retrieve JSON data from the request body
         try:
-            data = request.get_json()  # Parse the JSON payload
+            data = request.get_json()
             
             # Extract values from the JSON object
             soil_type = data['soil_type']
@@ -66,31 +149,49 @@ def predict():
             humidity = data['humidity']
             temperature = data['temperature']
             
-        except KeyError as e:
-            return jsonify({'error': f'Missing key: {str(e)}'}), 400
+            # Prepare the data as a NumPy array
+            data_array = np.array([
+                soil_type, watering_frequency, fertilizer_type,
+                light_intensity, humidity, temperature
+            ])
+            
+            # Debug prints
+            print("\nInput data:")
+            print(f"Raw input array: {data_array}")
+            
+            # Load the scaler and model
+            with open(file_path1, 'rb') as f:
+                scaler = joblib.load(f)
+                # Print scaler parameters
+                print("\nScaler parameters:")
+                print(f"Scale: {scaler.scale_}")
+                print(f"Mean: {scaler.mean_}")
+                print(f"Var: {scaler.var_}")
+            
+            with open(file_path2, 'rb') as f:
+                clf = joblib.load(f)
+            
+            # Transform and debug print
+            data_scaled = scaler.transform(data_array.reshape(1, -1))
+            print("\nTransformed data:")
+            print(f"Scaled array: {data_scaled}")
+            
+            # Get support vectors if using SVC
+            if hasattr(clf, 'support_vectors_'):
+                print("\nModel information:")
+                print(f"Number of support vectors: {len(clf.support_vectors_)}")
+                print(f"Support vector range: [{clf.support_vectors_.min()}, {clf.support_vectors_.max()}]")
+            
+            prediction = clf.predict(data_scaled)
+            print(f"\nFinal prediction: {prediction}")
+
+            return jsonify({'prediction': int(prediction[0])})
+
         except Exception as e:
-            return jsonify({'error': f'Invalid data: {str(e)}'}), 400
+            print(f"Error during prediction: {str(e)}")
+            return jsonify({'error': str(e)}), 500
 
-        # Prepare the data as a NumPy array
-        data_array = np.array([
-            soil_type, watering_frequency, fertilizer_type,
-            light_intensity, humidity, temperature
-        ])
-
-        # Load the scaler and model
-        with open(file_path1, 'rb') as f:
-            scaler = joblib.load(f)
-        with open(file_path2, 'rb') as f:
-            clf = joblib.load(f)
-
-        # Transform and predict
-        data_scaled = scaler.transform(data_array.reshape(1, -1))
-        prediction = clf.predict(data_scaled)
-
-        return jsonify({'prediction': int(prediction)})
-
-    else:
-        return jsonify({'error': 'Method not allowed'}), 405
+    return jsonify({'error': 'Method not allowed'}), 405
 
 
 # Callback to handle incoming messages
