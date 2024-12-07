@@ -48,8 +48,8 @@ import os
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Resolve the relative path
-file_path1 = os.path.join(current_dir, './scaler.pkl')
-file_path2 = os.path.join(current_dir, './model.pkl')
+# file_path1 = os.path.join(current_dir, './scaler.pkl')
+# file_path2 = os.path.join(current_dir, './model.pkl')
 
 from flask import Flask, request, jsonify
 import numpy as np
@@ -135,6 +135,49 @@ def validate_input(data):
     
     return features, None
 
+def ML_predict(data_array):
+    import numpy as np
+    import pandas as pd
+    path = os.path.join(current_dir, './plant_growth_data.csv')
+    data = pd.read_csv(path,  encoding = "ISO-8859-1")
+    df=data.copy()
+    from sklearn.model_selection import train_test_split
+
+    trainset, testset = train_test_split(df, test_size=0.2, random_state=0)
+    df['Water_Frequency'].dtype 
+
+    for i in list(df.columns) :
+        if pd.api.types.is_object_dtype(df[i]) :
+            df[i]=df[i].astype('category')
+            df[i]=df[i].cat.codes
+
+
+    def preprocessing(df):
+        
+        for i in list(df.columns) :
+            if pd.api.types.is_object_dtype(df[i]) :
+                df[i]=df[i].astype('category')
+                df[i]=df[i].cat.codes
+
+        
+        X = df.drop('Growth_Milestone', axis=1)
+        y = df['Growth_Milestone']
+                
+        return X, y
+    X_train, y_train = preprocessing(trainset)
+    X_test, y_test = preprocessing(testset)
+
+    from sklearn.linear_model import LogisticRegressionCV
+
+    clf = LogisticRegressionCV(cv=10, random_state=0,scoring='accuracy', penalty='l2').fit( X_train, y_train)
+    y_pred=clf.predict(X_test)
+
+
+    # Prédiction et probabilités
+    X = data_array.reshape(-1, 1)
+    y_pred = clf.predict(X.T)
+    return y_pred[0]
+
 @app.route('/predict', methods=['POST'])
 def predict():
     if request.method == 'POST':
@@ -151,46 +194,15 @@ def predict():
             
             # Prepare the data as a NumPy array
             data_array = np.array([
-                soil_type, watering_frequency, fertilizer_type,
-                light_intensity, humidity, temperature
-            ])
-            
-            # Debug prints
-            print("\nInput data:")
-            print(f"Raw input array: {data_array}")
-            
-            # Load the scaler and model
-            with open(file_path1, 'rb') as f:
-                scaler = joblib.load(f)
-                # Print scaler parameters
-                print("\nScaler parameters:")
-                print(f"Scale: {scaler.scale_}")
-                print(f"Mean: {scaler.mean_}")
-                print(f"Var: {scaler.var_}")
-            
-            with open(file_path2, 'rb') as f:
-                clf = joblib.load(f)
-            
-            # Transform and debug print
-            data_scaled = scaler.transform(data_array.reshape(1, -1))
-            print("\nTransformed data:")
-            print(f"Scaled array: {data_scaled}")
-            
-            # Get support vectors if using SVC
-            if hasattr(clf, 'support_vectors_'):
-                print("\nModel information:")
-                print(f"Number of support vectors: {len(clf.support_vectors_)}")
-                print(f"Support vector range: [{clf.support_vectors_.min()}, {clf.support_vectors_.max()}]")
-            
-            prediction = clf.predict(data_scaled)
-            print(f"\nFinal prediction: {prediction}")
-
-            return jsonify({'prediction': int(prediction[0])})
+                soil_type, light_intensity, watering_frequency ,
+                fertilizer_type, temperature, humidity
+            ]) 
+            result = int(ML_predict(data_array))
+            return jsonify({'prediction' : result})
 
         except Exception as e:
             print(f"Error during prediction: {str(e)}")
             return jsonify({'error': str(e)}), 500
-
     return jsonify({'error': 'Method not allowed'}), 405
 
 
