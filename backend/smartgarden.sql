@@ -311,7 +311,12 @@ CREATE TABLE IF NOT EXISTS `logs` (
 ) ENGINE=InnoDB AUTO_INCREMENT=142 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
-
+-- Inserting into logs 
+INSERT into `logs` (`plant_name`, `operation`, `date`) values ('Tomato','Watering','07/12/2024')
+INSERT into `logs` (`plant_name`, `operation`, `date`) values ('Tomato','Watering','26/11/2024')
+INSERT into `logs` (`plant_name`, `operation`, `date`) values ('Chickpea','Fertilizer','11/11/2024')
+INSERT into `logs` (`plant_name`, `operation`, `date`) values ('Chickpea','Pesticides','30/10/2024')
+INSERT into `logs` (`plant_name`, `operation`, `date`) values ('Pea','Watering','07/12/2024')
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;

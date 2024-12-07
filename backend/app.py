@@ -314,9 +314,9 @@ def get_logs():
     try:
         conn = mysql.connector.connect(**db_config)
         cursor = conn.cursor(dictionary=True) 
-        query = "SELECT * FROM logs order by id desc LIMIT 1 "
+        query = "SELECT * FROM logs order by id"
         cursor.execute(query)
-        result = cursor.fetchone()
+        result = cursor.fetchall()
         cursor.close()
         conn.close()
         if result:
@@ -331,21 +331,21 @@ def get_logs():
         return jsonify({'error': f'An error occurred: {str(e)}'})
 
 @app.route('/deleteLog/<log_id>', methods=['DELETE'])
-def delete_log(task_id):
+def delete_log(log_id):
     # test w/ curl -X DELETE "http://127.0.0.1:5000/deleteLog/111"
     try:
         conn = mysql.connector.connect(**db_config)
         cursor = conn.cursor()
 
-        query = "DELETE FROM task WHERE id = %s"
-        cursor.execute(query, (task_id,))
+        query = "DELETE FROM logs WHERE id = %s"
+        cursor.execute(query, (log_id,))
         conn.commit()
 
         if cursor.rowcount > 0:
-            response = {"message": f"Task '{task_id}' deleted successfully."}
+            response = {"message": f"Log '{log_id}' deleted successfully."}
             status_code = 200
         else:
-            response = {"error": f"PlTaskant '{task_id}' not found."}
+            response = {"error": f"Log '{log_id}' not found."}
             status_code = 404
 
         cursor.close()
@@ -364,6 +364,27 @@ db_config = {
     'password': '',
     'database': 'gardenpy'
 }
+
+@app.route('/getPlantsNames', methods=['GET'])
+def get_plants_names():
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor(dictionary=True) 
+        query = "SELECT plant_name FROM plant"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        if result:
+            return jsonify({'plants': result})
+        else:
+            return jsonify({'message': 'No data found in the sensor_data table'})
+    
+    except mysql.connector.Error as err:
+        return jsonify({'error': f'Database error: {err}'})
+    
+    except Exception as e:
+        return jsonify({'error': f'An error occurred: {str(e)}'})
 
 @app.route('/getPlants', methods=['GET'])
 def get_plants():

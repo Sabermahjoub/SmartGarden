@@ -32,7 +32,7 @@ export class LogsService {
     return this.http.delete(`${this.logsApiUrl}/deleteLog/${log_id}`, { responseType: 'json' }).pipe(
       map( 
         (response :any) => {
-          console.log("Normal delete response : ", response);
+          console.log("Normal delete log response : ", response);
           return response;
         }
       ), 
