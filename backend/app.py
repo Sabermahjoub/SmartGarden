@@ -166,23 +166,35 @@ def get_data():
 @app.route('/getTasks', methods=['GET'])
 def get_tasks():
     try:
+        from datetime import datetime
+        today = datetime.now().strftime('%d/%m/%Y')
+        
         conn = mysql.connector.connect(**db_config)
-        cursor = conn.cursor(dictionary=True) 
-        query = "SELECT * FROM task order by id desc LIMIT 1 "
-        cursor.execute(query)
-        result = cursor.fetchone()
+        cursor = conn.cursor(dictionary=True)
+
+        query = """
+        SELECT * 
+        FROM task 
+        WHERE STR_TO_DATE(starting_time, '%d/%m/%Y') = STR_TO_DATE(%s, '%d/%m/%Y')
+        ORDER BY task_id DESC
+        """
+        cursor.execute(query, (today,))
+        result = cursor.fetchall()  
+
         cursor.close()
         conn.close()
+
         if result:
-            return jsonify({'data': result})
+            return jsonify(result)
         else:
-            return jsonify({'message': 'No data found in the tasks table'})
-    
+            return jsonify({'message': 'No tasks found for today'})
+
     except mysql.connector.Error as err:
         return jsonify({'error': f'Database error: {err}'})
     
     except Exception as e:
         return jsonify({'error': f'An error occurred: {str(e)}'})
+    
 @app.route('/deleteTask/<task_id>', methods=['DELETE'])
 def delete_task(task_id):
     # test w/ curl -X DELETE "http://127.0.0.1:5000/deleteTask/111"
