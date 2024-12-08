@@ -61,4 +61,15 @@
   background-color: rgb(110 138 97); /* Darker shade of blue */
 }
 
+::ng-deep .custom-red-style {
+  background-color: rgb(161, 21, 21);
+  font-weight: bold;
+}
+
+::ng-deep .custom-style {
+  background-color: rgb(64, 165, 64);
+}
+::ng-deep .mat-simple-snackbar-action > button {
+  color: white;
+}
 

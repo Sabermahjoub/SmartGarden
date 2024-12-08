@@ -47,10 +47,10 @@
                 </div>
                 <mat-form-field class="w-full" appearance="fill">
                     <mat-label class="!text-xs">frequency :</mat-label>
-                    <mat-select formControlName="water_frequency" >
-                        <mat-option [value]="type.value" *ngFor="let type of water_frequency">{{ type.name }}</mat-option>
+                    <mat-select formControlName="watering_frequency" >
+                        <mat-option [value]="type.value" *ngFor="let type of watering_frequency">{{ type.name }}</mat-option>
                     </mat-select>
-                    <mat-error *ngIf="predictionForm.get('water_frequency')?.hasError('required')">
+                    <mat-error *ngIf="predictionForm.get('watering_frequency')?.hasError('required')">
                         <span class="font-bold text-sm text-red-700">input required.</span>
                     </mat-error>
                 </mat-form-field>
@@ -75,7 +75,7 @@
 
                   <!-- Submit -->
                   <div class="flex justify-center mb-0 items-center px-4">
-                    <button (click)="onSubmit()" [disabled]="predictionForm.invalid"  class="w-full mb-0 justify-center items-center !bg-lightGreen" type="submit" mat-raised-button>
+                    <button (click)="onSubmit_ML()" [disabled]="predictionForm.invalid"  class="w-full mb-0 justify-center items-center !bg-lightGreen" type="submit" mat-raised-button>
                         <div class="flex justify-center items-center">
                             <span class="ml-2">Predict</span>
                         </div>
@@ -123,7 +123,7 @@
 
          <!-- Submit -->
          <div class="flex justify-center mb-2 items-center px-4">
-            <button (click)="onSubmit()" [disabled]="predictionForm.invalid" class="w-full mb-0 justify-center items-center !bg-lightGreen" type="submit" mat-raised-button>
+            <button (click)="onSubmit_DL()" [disabled]="predictionForm.invalid" class="w-full mb-0 justify-center items-center !bg-lightGreen" type="submit" mat-raised-button>
                 <div class="flex justify-center items-center">
                     <span class="ml-2">Predict</span>
                 </div>

@@ -4,6 +4,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialogRef } from '@angular/material/dialog';
 import { backendData } from 'src/app/models/weather_data';
 import { DateHourTempService } from 'src/app/services/date-hour-temp.service';
+import { PredictionService } from 'src/app/services/prediction.service';
+
 
 @Component({
   selector: 'app-prediction',
@@ -20,10 +22,10 @@ export class PredictionComponent implements OnInit {
     { name: "Clay", value: 2 }
   ];
   
-  water_frequency = [
-    {name : "weekly", value : 1},
+  watering_frequency = [
+    {name : "weekly", value : 2},
     {name : "biweekly", value:0},
-    {name:"daily", value:0}
+    {name:"daily", value:1}
   ];
 
   fertilizer_type = [
@@ -36,15 +38,17 @@ export class PredictionComponent implements OnInit {
   predictionForm! : FormGroup;
   loading : boolean = false;
 
-  constructor(private fb : FormBuilder, private service : DateHourTempService) { }
+  constructor(private fb : FormBuilder, private service : DateHourTempService,
+    private predictionService : PredictionService,
+    private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
     
     this.predictionForm = this.fb.group({
 
       soil_type : ['', [Validators.required, Validators.pattern(/^[0-2]$/) ]],
-      sunlight : [0, [Validators.required]],
-      water_frequency : ['', [Validators.required,Validators.required, Validators.pattern(/^[0-2]$/)]],    
+      light_intensity : [0, [Validators.required]],
+      watering_frequency : ['', [Validators.required,Validators.required, Validators.pattern(/^[0-2]$/)]],    
       fertilizer_type : ['', [Validators.required,Validators.pattern(/^[0-2]$/)]],
       temperature : [0, [Validators.required]],
       humidity : [0, [Validators.required ]]
@@ -52,17 +56,84 @@ export class PredictionComponent implements OnInit {
     });
   };
 
-  onSubmit() : void {
+  onSubmit_DL() : void {
+    
+  }
+
+  onSubmit_ML() : void {
     this.loading = true;
     this.service.getDataFromBack().subscribe((response : backendData) => {
-      const light_intensity = response.light_percentage? response.light_percentage*100 : 0 ;
+      //const light_intensity = response.light_percentage? response.light_percentage*100 : 0 ;
+      const light_intensity = response.light_percentage? response.light_percentage: 0 ;
       this.predictionForm.get('temperature')?.setValue(response.temperature);
       this.predictionForm.get('humidity')?.setValue(response.humidity);
-      this.predictionForm.get('sunlight')?.setValue(light_intensity);
+      this.predictionForm.get('light_intensity')?.setValue(light_intensity);
 
       console.log("Prediction form : ", this.predictionForm.value);
-      // send to backend to predicct
+
+      this.predictionService.ML_predict(this.predictionForm.value).subscribe(response => {
+        if ('prediction' in response) {
+          const convertedProbabilities: { [key: string]: string } = {};
+
+          for (const key in response.probabilities) {
+            if (response.probabilities.hasOwnProperty(key)) {
+              const probability = parseFloat(response.probabilities[key]).toFixed(2);
+              convertedProbabilities[key] = probability;            }
+          }
+          
+          // Combine the updated probabilities with the original response
+          const convertedResponse = {
+            ...response,
+            probabilities: convertedProbabilities,
+          };
+            // Create a string to display probabilities
+          const probabilitiesMessage = Object.entries(convertedResponse.probabilities)
+          .map(([key, value]) => `${key}: ${value}`)
+          .join(', ');
+          if (response.prediction == 0) {
+            this.snackBar.open(
+              `The plant is predicted to be healthy . Probabilities :${probabilitiesMessage}`,
+              'Close',
+              {
+                duration: 3000,
+                horizontalPosition: 'center',
+                verticalPosition: 'top',
+                panelClass: ['custom-style'],
+              }
+            );
+          }
+          else {
+            this.snackBar.open(
+              `The plant is predicted to not be healthy . Probabilities :${probabilitiesMessage}`,
+              'Close',
+              {
+                duration: 3000,
+                horizontalPosition: 'center',
+                verticalPosition: 'top',
+                panelClass: ['custom-red-style'],
+              }
+            );
+
+          }
+        } 
+        else if (response.error) {
+          this.snackBar.open(
+            'Error occurred while trying to predict. Try again !',
+            'Close',
+            {
+              duration: 3000,
+              horizontalPosition: 'center',
+              verticalPosition: 'top',
+              panelClass: ['custom-red-style'],
+            }
+          );
+        }
+      });
+
     });
+    setTimeout(() => {
+      this.loading = false;
+    }, 1000);
 
   };
 
