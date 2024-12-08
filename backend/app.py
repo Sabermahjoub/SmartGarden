@@ -74,8 +74,8 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(current_dir, './ml_model.pkl')
 clf = joblib.load(model_path)
 
-@app.route('/predict', methods=['POST'])
-def predict():
+@app.route('/predict_ML', methods=['POST'])
+def predict_ML():
     if request.method == 'POST':
         try:
             data = request.get_json()
@@ -94,14 +94,27 @@ def predict():
                 fertilizer_type, temperature, humidity
             ])
 
-            # Make a prediction using the loaded model
-            result = int(clf.predict(data_array.reshape(1, -1))[0])
-            return jsonify({'prediction': result})
+            # Ensure data is in the right shape for prediction
+            data_array = data_array.reshape(1, -1)
+
+            # Make a prediction and get probabilities
+            predicted_class = int(clf.predict(data_array)[0])
+            probabilities = clf.predict_proba(data_array)[0]  # Probabilities for each class
+
+            # Build and return the response
+            return jsonify({
+                'prediction': predicted_class,
+                'probabilities': {
+                    f'class_{i}': float(prob) for i, prob in enumerate(probabilities)
+                }
+            })
 
         except Exception as e:
             print(f"Error during prediction: {str(e)}")
             return jsonify({'error': str(e)}), 500
+
     return jsonify({'error': 'Method not allowed'}), 405
+
 
 # Callback to handle incoming messages
 def on_message(client, userdata, message):
