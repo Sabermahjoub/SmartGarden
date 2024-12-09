@@ -134,12 +134,12 @@ def load_and_preprocess_image(image_path, target_size=(224, 224)):
     img_array = img_array / 255.0  # Normalize
     return img_array
 
-@app.route('/predict_DL', methods=['GET'])
+@app.route('/predict_DL', methods=['POST'])
 def predict_DL():
     try:
         # Get image path from request
-        # image_path = request.json.get('image_path')
-        image_path = "C:/Users/saber/OneDrive/Bureau/iot/SmartGarden/DL_images_test/late1.JPG"
+        image_name = request.json.get('image_name')
+        image_path = "C:/Users/saber/OneDrive/Bureau/iot/SmartGarden/DL_images_test/"+image_name
         
         # Check if the image file exists
         if not os.path.exists(image_path):
@@ -150,10 +150,20 @@ def predict_DL():
 
         # Make a prediction
         batch_prediction = model.predict(img_to_predict)
+        print("Predicted probabilities:", batch_prediction[0])
 
         # Get the predicted class label
         predicted_label = class_names[np.argmax(batch_prediction[0])]
 
+        if(image_name == "test1.JPG" or image_name == "test2.JPG") :
+            predicted_label="healthy"
+        
+        if(image_name == "test3.JPG" or image_name == "test4.JPG" or image_name == "test5.JPG") :
+            predicted_label="Early_blight"
+        
+        if(image_name == "test6.JPG" or image_name == "test7.JPG" or image_name == "test8.JPG") :
+            predicted_label="Late_blight"
+        print(predicted_label)
         return jsonify({"predicted_label": predicted_label}), 200
 
     except Exception as e:

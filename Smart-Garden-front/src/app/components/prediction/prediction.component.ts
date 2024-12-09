@@ -36,7 +36,8 @@ export class PredictionComponent implements OnInit {
 
   
   predictionForm! : FormGroup;
-  loading : boolean = false;
+  loading_ML : boolean = false;
+  loading_DL : boolean = false;
 
   constructor(private fb : FormBuilder, private service : DateHourTempService,
     private predictionService : PredictionService,
@@ -57,11 +58,70 @@ export class PredictionComponent implements OnInit {
   };
 
   onSubmit_DL() : void {
-    
-  }
+    console.log("IMAGE SRC ", this.imageName)
+    this.loading_DL = true;
+
+    if (this.imageSrc){
+      const DL_request = {"image_name" : this.imageName}; 
+      this.predictionService.DL_predict(DL_request).subscribe(response => {
+        if ('predicted_label' in response) {
+          if(response.predicted_label === 'healthy'){
+            this.snackBar.open(
+              `The plant is predicted to be  : ${response.predicted_label}`,
+              'Close',
+              {
+                duration: 3000,
+                horizontalPosition: 'center',
+                verticalPosition: 'top',
+                panelClass: ['custom-style'],
+              }
+            );  
+          }
+          if(response.predicted_label === 'Early_blight'){
+            this.snackBar.open(
+              `The plant is predicted to be in : ${response.predicted_label}`,
+              'Close',
+              {
+                duration: 3000,
+                horizontalPosition: 'center',
+                verticalPosition: 'top',
+                panelClass: ['custom-orange-style'],
+              }
+            );  
+          }
+          if(response.predicted_label === 'Late_blight'){
+            this.snackBar.open(
+              `The plant is predicted to be in : ${response.predicted_label}`,
+              'Close',
+              {
+                duration: 3000,
+                horizontalPosition: 'center',
+                verticalPosition: 'top',
+                panelClass: ['custom-red-style'],
+              }
+            );  
+          }
+          
+        } 
+        else if (response.error) {
+          this.snackBar.open(
+            'Error occurred while trying to predict. Try again !',
+            'Close',
+            {
+              duration: 3000,
+              horizontalPosition: 'center',
+              verticalPosition: 'top',
+              panelClass: ['custom-red-style'],
+            }
+          );
+        }
+      });
+    }
+
+  };
 
   onSubmit_ML() : void {
-    this.loading = true;
+    this.loading_ML = true;
     this.service.getDataFromBack().subscribe((response : backendData) => {
       //const light_intensity = response.light_percentage? response.light_percentage*100 : 0 ;
       const light_intensity = response.light_percentage? response.light_percentage: 0 ;
@@ -132,12 +192,13 @@ export class PredictionComponent implements OnInit {
 
     });
     setTimeout(() => {
-      this.loading = false;
+      this.loading_ML = false;
     }, 1000);
 
   };
 
   imageSrc: string | ArrayBuffer | null = null;
+  imageName : string = "";
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -149,6 +210,7 @@ export class PredictionComponent implements OnInit {
         this.imageSrc = reader.result; // Base64 image data
       };
 
+      this.imageName = file.name
       reader.readAsDataURL(file); // Read the file as a data URL
     }
   }
