@@ -118,6 +118,8 @@ def predict_ML():
 
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
+from tensorflow.keras.preprocessing.image import load_img
+
 # Load the trained model
 model = load_model("mon_modeleDeepLearning.h5")
 
@@ -132,11 +134,12 @@ def load_and_preprocess_image(image_path, target_size=(224, 224)):
     img_array = img_array / 255.0  # Normalize
     return img_array
 
-@app.route('/predict_DL', methods=['POST'])
+@app.route('/predict_DL', methods=['GET'])
 def predict_DL():
     try:
         # Get image path from request
-        image_path = request.json.get('image_path')
+        # image_path = request.json.get('image_path')
+        image_path = "C:/Users/saber/OneDrive/Bureau/iot/SmartGarden/DL_images_test/late1.JPG"
         
         # Check if the image file exists
         if not os.path.exists(image_path):
