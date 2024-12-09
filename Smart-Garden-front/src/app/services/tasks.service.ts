@@ -10,13 +10,55 @@ export class TasksService {
 
   private taskApiUrl = "http://127.0.0.1:5000";
 
-  constructor(private http : HttpClient) { }
+  constructor(private http : HttpClient) { } 
+
+  deleteTask(task_id : number) : Observable<any> {
+    return this.http.delete(`${this.taskApiUrl}/deleteTask/${task_id}`, { responseType: 'json' }).pipe(
+      map( 
+        (response :any) => {
+          return response;
+        }
+      ), 
+      catchError((error :any) => {
+        console.error(error);
+        return of(error);
+      })
+    );
+  }
+
+  updateTaskStatus(task_id : number) : Observable<any> {
+    return this.http.put(`${this.taskApiUrl}/updateTaskStatus/${task_id}`, {"done" : 1}, { responseType: 'json' }).pipe(
+      map( 
+        (response :any) => {
+          return response;
+        }
+      ), 
+      catchError((error :any) => {
+        console.error(error);
+        return of(error);
+      })
+    );
+  }
+  
+  getTasks() : Observable<any> {
+    return this.http.get(`${this.taskApiUrl}/getTasks`, { responseType: 'json' }).pipe(
+      map( 
+        (response :any) => {
+          return response;
+        }
+      ), 
+      catchError((error :any) => {
+        console.error(error);
+        return of(error);
+      })
+    );
+  }
+
 
   createTask(newTask : task) : Observable<any> {
     return this.http.post(`${this.taskApiUrl}/addTask`, newTask, { responseType: 'json' }).pipe(
       map( 
         (response :any) => {
-          console.log("Normal create task response : ", response);
           return response;
         }
       ), 

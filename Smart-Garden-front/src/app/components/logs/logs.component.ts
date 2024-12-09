@@ -66,6 +66,7 @@ export class LogsComponent implements OnInit {
       this._liveAnnouncer.announce('Sorting cleared');
     }
   }
+  
 
   getAllLogs() : void {
     this.logsServices.getAllLogs().subscribe(response => {

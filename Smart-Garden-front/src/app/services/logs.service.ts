@@ -13,6 +13,20 @@ export class LogsService {
 
   constructor(private http : HttpClient) { }
 
+  createLog(newLog : any) : Observable<any> {
+    return this.http.post(`${this.logsApiUrl}/addLog`, newLog, { responseType: 'json' }).pipe(
+      map( 
+        (response :any) => {
+          return response;
+        }
+      ), 
+      catchError((error :any) => {
+        console.error(error);
+        return of(error);
+      })
+    );
+  }
+
   getAllLogs() : Observable<any>{
     return this.http.get(`${this.logsApiUrl}/getLogs`, { responseType: 'json' }).pipe(
       map( 
