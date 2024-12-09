@@ -103,7 +103,7 @@ export class CreateTaskComponent implements OnInit {
     this.getAllPlantsNames();
     this.taskForm = this.fb.group({
       plant : ['', [Validators.required]],
-      task_name: ['', [Validators.required,Validators.pattern(/^[a-zA-Z_][a-zA-Z0-9_]*$/)  ]], 
+      task_name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z_][a-zA-Z0-9_ ]*$/)]],
       description: ['', [ Validators.minLength(6)]], 
       task_type : ['Other', [Validators.required]],
       starting_time : ['', []],

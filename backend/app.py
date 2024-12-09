@@ -116,6 +116,50 @@ def predict_ML():
     return jsonify({'error': 'Method not allowed'}), 405
 
 
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.preprocessing.image import load_img
+
+# Load the trained model
+model = load_model("mon_modeleDeepLearning.h5")
+
+# Define class names (replace with your actual class names)
+class_names = ['Early_blight', 'Late_blight', 'healthy']
+
+# Function to load and preprocess image
+def load_and_preprocess_image(image_path, target_size=(224, 224)):
+    img = image.load_img(image_path, target_size=target_size)  # Load the image
+    img_array = image.img_to_array(img)  # Convert to numpy array
+    img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
+    img_array = img_array / 255.0  # Normalize
+    return img_array
+
+@app.route('/predict_DL', methods=['GET'])
+def predict_DL():
+    try:
+        # Get image path from request
+        # image_path = request.json.get('image_path')
+        image_path = "C:/Users/saber/OneDrive/Bureau/iot/SmartGarden/DL_images_test/late1.JPG"
+        
+        # Check if the image file exists
+        if not os.path.exists(image_path):
+            return jsonify({"error": "Image file not found"}), 404
+
+        # Preprocess the image
+        img_to_predict = load_and_preprocess_image(image_path)
+
+        # Make a prediction
+        batch_prediction = model.predict(img_to_predict)
+
+        # Get the predicted class label
+        predicted_label = class_names[np.argmax(batch_prediction[0])]
+
+        return jsonify({"predicted_label": predicted_label}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 # Callback to handle incoming messages
 def on_message(client, userdata, message):
     global received_data
@@ -175,7 +219,7 @@ def get_tasks():
         query = """
         SELECT * 
         FROM task 
-        WHERE STR_TO_DATE(starting_time, '%d/%m/%Y') = STR_TO_DATE(%s, '%d/%m/%Y')
+        WHERE STR_TO_DATE(date, '%d/%m/%Y') = STR_TO_DATE(%s, '%d/%m/%Y')
         ORDER BY task_id DESC
         """
         cursor.execute(query, (today,))
@@ -202,7 +246,7 @@ def delete_task(task_id):
         conn = mysql.connector.connect(**db_config)
         cursor = conn.cursor()
 
-        query = "DELETE FROM task WHERE id = %s"
+        query = "DELETE FROM task WHERE task_id = %s"
         cursor.execute(query, (task_id,))
         conn.commit()
 
@@ -210,7 +254,7 @@ def delete_task(task_id):
             response = {"message": f"Task '{task_id}' deleted successfully."}
             status_code = 200
         else:
-            response = {"error": f"PlTaskant '{task_id}' not found."}
+            response = {"error": f"Task '{task_id}' not found."}
             status_code = 404
 
         cursor.close()
@@ -226,8 +270,11 @@ def delete_task(task_id):
 def add_log():
     try:
         data = request.json
+
+        from datetime import datetime
+        today = datetime.now().strftime('%d/%m/%Y')
         required_fields = [
-            "id", "plant_name", "operation", "date"
+            "plant_name", "operation", "date"
         ]
         
         missing_fields = [field for field in required_fields if field not in data]
@@ -238,14 +285,13 @@ def add_log():
         cursor = conn.cursor()
         
         query = """
-        INSERT INTO logs (id,
+        INSERT INTO logs (
             plant_name, operation, date
-        ) VALUES (%s, %s, %s, %s)
+        ) VALUES (%s, %s, %s)
         """
         
         values = (
-            data['id'], data['plant_name'], data['operation'], 
-            data['date']
+            data['plant_name'], data['operation'], data['date']
         )
         
         cursor.execute(query, values)
@@ -275,20 +321,23 @@ def add_task():
         if missing_fields:
             return jsonify({'error': f'Missing fields: {", ".join(missing_fields)}'}), 400
         
+        from datetime import datetime
+        date = datetime.now().strftime('%d/%m/%Y')
         conn = mysql.connector.connect(**db_config)
         cursor = conn.cursor()
         
         query = """
         INSERT INTO task (
             task_name, description, task_type, starting_time,
-            ending_time, plant, done
-        ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+            ending_time, plant, done, date
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s,%s)
         """
         
         values = (
             data['task_name'], data['description'], data['task_type'],
             data['starting_time'], data['ending_time'], data['plant'],
-            int(data['done'])  # Convert to integer for TINYINT field
+            int(data['done']),  # Convert to integer for TINYINT field
+            date
         )
         
         cursor.execute(query, values)
