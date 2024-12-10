@@ -4,17 +4,15 @@ from paho import mqtt
 import mysql.connector
 import json
 
-# MySQL connection
 db = mysql.connector.connect(
-    host="localhost",  # Replace with your MySQL host
-    user="root",       # Replace with your MySQL username
-    password="", # Replace with your MySQL password
-    database="gardenpy" # The name of the database you created
+    host="localhost", 
+    user="root",       
+    password="", 
+    database="gardenpy" 
 )
 
 cursor = db.cursor()
 
-# MQTT event callbacks
 def on_connect(client, userdata, flags, rc, properties=None):
     if rc == 0:
         print("Connected successfully")
@@ -31,7 +29,6 @@ def on_message(client, userdata, msg):
     print(f"Received message on topic {msg.topic} with QoS {msg.qos} and payload {msg.payload.decode()}")
 
     try:
-        # Parse the incoming JSON data
         payload = json.loads(msg.payload.decode())
         temperature = payload['temp']
         humidity = payload['humidity']
@@ -41,7 +38,6 @@ def on_message(client, userdata, msg):
 
         print(f"Temperature: {temperature}, Humidity: {humidity}, Light: {light_percentage}%, Soil Moisture: {moisture}%")
 
-        # Insert data into MySQL
         insert_query = "INSERT INTO sensor_data (temperature, humidity, light_percentage,moisture) VALUES (%s, %s, %s,%s)"
         cursor.execute(insert_query, (temperature, humidity, light_percentage,moisture))
         db.commit()
@@ -50,28 +46,21 @@ def on_message(client, userdata, msg):
     except (json.JSONDecodeError, KeyError) as e:
         print(f"Error processing message: {e}")
 
-# MQTT Client Setup
 client = paho.Client(client_id="pythonmqtt", userdata=None, protocol=paho.MQTTv5)
 client.on_connect = on_connect
 client.on_publish = on_publish
 client.on_subscribe = on_subscribe
 client.on_message = on_message
 
-# Enable TLS encryption for the MQTT client
 client.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS)
 
-# Set username and password for MQTT connection
 client.username_pw_set("garden", "Garden123")
 
-# Connect to MQTT broker
 client.connect("5fbcd303cf5d4f4aa437ee13fb50fd99.s1.eu.hivemq.cloud", 8883)
 
-# Subscribe to the topic
 client.subscribe("garden/#", qos=0)
 
-# Start the MQTT loop to process messages
 client.loop_forever()
 
-# Close MySQL cursor and connection when done
 cursor.close()
 db.close()
