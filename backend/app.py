@@ -139,9 +139,7 @@ def predict_DL():
     try:
         # Get image path from request
         image_name = request.json.get('image_name')
-        image_path = "C:/Users/saber/OneDrive/Bureau/iot/SmartGarden/DL_images_test/"+image_name
-        
-        # Check if the image file exists
+        image_path = "C:/Users/LENOVO/Downloads/SmartGarden/DL_images_test/"+image_name
         if not os.path.exists(image_path):
             return jsonify({"error": "Image file not found"}), 404
 
