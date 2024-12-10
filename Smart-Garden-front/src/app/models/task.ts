@@ -7,4 +7,5 @@ export interface task {
     ending_time : string,
     plant : string,
     done : boolean
+    date : string
 }

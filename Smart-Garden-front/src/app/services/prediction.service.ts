@@ -12,6 +12,21 @@ export class PredictionService {
 
   constructor(private http : HttpClient) { }
 
+  DL_predict(imageObject : any) : Observable<any> {
+    return this.http.post(`${this.predictionApiUrl}/predict_DL`, imageObject, { responseType: 'json' }).pipe(
+      map( 
+        (response :any) => {
+          console.log("Normal DL prediction response : ", response);
+          return response;
+        }
+      ), 
+      catchError((error :any) => {
+        console.error(error);
+        return of(error);
+      })
+    );
+  }
+
   ML_predict(predictionRequest : any) : Observable<any> {
     return this.http.post(`${this.predictionApiUrl}/predict_ML`, predictionRequest, { responseType: 'json' }).pipe(
       map( 

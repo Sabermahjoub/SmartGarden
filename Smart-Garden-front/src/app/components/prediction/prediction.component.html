@@ -7,7 +7,7 @@
         <div class="p-2 m-0 gap-1 flex flex-col w-full h-[25%]">
             <div class="flex justify-center items-center">
                 <p class="flex gap-1 justify-center items-center text-center font-semibold text-darkGreen text-3xl">
-                    <mat-spinner *ngIf="loading" color="accent" diameter="28"></mat-spinner>
+                    <mat-spinner *ngIf="loading_ML" color="accent" diameter="28"></mat-spinner>
                     Prediction</p>
             </div>
             <div class="p-0 bg-customGrey flex justify-center items-center">
@@ -90,7 +90,7 @@
         <div class="p-2 m-0 gap-1 flex flex-col w-full h-[30%]">
             <div class="flex justify-center items-center">
                 <p class="flex gap-1 justify-center items-center text-center font-semibold text-darkGreen text-3xl">
-                    <mat-spinner *ngIf="loading" color="accent" diameter="28"></mat-spinner>
+                    <mat-spinner *ngIf="loading_DL" color="accent" diameter="28"></mat-spinner>
                     Image classification
                 </p>
             </div>
@@ -123,7 +123,7 @@
 
          <!-- Submit -->
          <div class="flex justify-center mb-2 items-center px-4">
-            <button (click)="onSubmit_DL()" [disabled]="predictionForm.invalid" class="w-full mb-0 justify-center items-center !bg-lightGreen" type="submit" mat-raised-button>
+            <button (click)="onSubmit_DL()" [disabled]="imageSrc === ''" class="w-full mb-0 justify-center items-center !bg-lightGreen" type="submit" mat-raised-button>
                 <div class="flex justify-center items-center">
                     <span class="ml-2">Predict</span>
                 </div>

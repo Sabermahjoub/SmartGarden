@@ -7,6 +7,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { DateHourTempService } from 'src/app/services/date-hour-temp.service';
 import { PlantsService } from 'src/app/services/plants.service';
 import { plant } from 'src/app/models/plant';
+import { TasksService } from 'src/app/services/tasks.service';
+import { task } from 'src/app/models/task';
+import { LogsService } from 'src/app/services/logs.service';
 
 import { WeatherApiData, backendData } from 'src/app/models/weather_data';
 import { DatePipe } from '@angular/common';
@@ -29,7 +32,9 @@ export class DashboardHomeComponent implements OnInit {
     private dateService : DateHourTempService,
     private plantsService : PlantsService,
     private datePipe : DatePipe,
-    private dialog : MatDialog
+    private dialog : MatDialog,
+    private taskService : TasksService,
+    private logsService : LogsService
   ) { 
   }
 
@@ -59,6 +64,7 @@ export class DashboardHomeComponent implements OnInit {
   };
 
   allPlants : plant[] = [] ;
+  allTasks : task[] = [];
 
   
   // Current Date info 
@@ -84,6 +90,23 @@ export class DashboardHomeComponent implements OnInit {
     risk : null
   };
 
+  getAllTasks() : void {
+    this.taskService.getTasks().subscribe(response => {
+      if (response.message){
+        // no tasks
+      }
+      else if (response.error){
+        //error
+      }
+      else {
+        console.log("HEEEEEEEEEY TASKSSS",response)
+        this.allTasks = response;
+      }
+    }
+
+    )
+  }
+
   getAllPlants() : void {
     this.plantsService.getAllPlants().subscribe( response =>{
       if(response.plants) {
@@ -99,6 +122,7 @@ export class DashboardHomeComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.getAllTasks();
     this.getAllPlants();
 
     this.formattedDate = this.datePipe.transform(new Date(), 'EEE, MMMM dd, yyyy') || '';
@@ -147,8 +171,15 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   isDay() : boolean {
-    if (this.weatherApiData.sunrise === null ) return false;
-    return !this.isTimeEarlier(this.weatherApiData.sunrise);
+    if (this.weatherApiData.sunrise === null || this.weatherApiData.sunset === null ) return false;
+    //return !this.isTimeEarlier(this.weatherApiData.sunrise);
+    else {
+      const [hourSunrise, minuteSunrise] = this.weatherApiData.sunrise.split(":").map(Number);
+      const [hourSunset, minuteSunset] = this.weatherApiData.sunset.split(":").map(Number);
+      const [hourNow, minuteNow] = this.formattedTime.split(":").map(Number);
+      if (hourNow >= hourSunrise && hourNow < hourSunset) return true;
+      else return false;
+    }
   }
 
   isNight() : boolean {
@@ -185,31 +216,84 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   getTasksLength() : number {
-    return this.tasks.length;
+    return this.allTasks.length;
   }
 
   getAllDoneTasks(): number {
-    return this.tasks.filter(task => task.done).length;
+    return this.allTasks.filter(task => task.done).length;
   }
 
-  tasks = [
-    { name: 'Watering', description: 'Water plants with 1 inch of water in the morning', starting_time : "23:00", ending_time:"23:30", done: true },
-    { name: 'Fertilizing', description: 'Apply organic fertilizer at base of plants. Quantity: 50g per plant', starting_time : "07:00", ending_time:"10:00", done: false },
-    { name: 'Pest Inspection', description: 'Check leaves for any signs of aphids or other pests', starting_time : "08:00", ending_time:"08:30", done: false }
-  ];
-
-  completeTask(task :any) {
-    task.done = !task.done;
-    this.snackBar.open(
-      'Great Job. You have finished a task.',
-      'Close',
-      {
-        duration: 3000,
-        horizontalPosition: 'center',
-        verticalPosition: 'top',
-        panelClass: ['custom-style'],
-      }
+  completeTask(targetTaskId :number) {
+    this.allTasks = this.allTasks.map(task =>
+      task.task_id === targetTaskId ? { ...task, done: true } : task
     );
+    this.taskService.updateTaskStatus(targetTaskId).subscribe(response =>{
+      if(response.message){
+
+        this.snackBar.open(
+          'Great Job. You have finished a task.',
+          'Close',
+          {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['custom-style'],
+          }
+        );
+
+        // create new log : 
+        const selectedTask : task | undefined = this.allTasks.find(task => task.task_id === targetTaskId);
+        let newLog : any = null;
+        if (selectedTask) {
+          newLog = {"plant_name" : selectedTask.plant, "operation" : selectedTask.task_type, "date" : selectedTask.date};
+        }
+
+        this.logsService.createLog(newLog).subscribe( response =>{
+          if(!response.error){
+            setTimeout(() => {
+              this.snackBar.open(
+                `${response.message}`,
+                'Close',
+                {
+                  duration: 3000,
+                  horizontalPosition: 'center',
+                  verticalPosition: 'top',
+                  panelClass: ['custom-style'],
+                }
+              );
+            }, 3000); // 3000 milliseconds = 3 seconds
+          }
+          else {
+            this.snackBar.open(
+              'Error occurred while trying to create log. Try again !',
+              'Close',
+              {
+                duration: 3000,
+                horizontalPosition: 'center',
+                verticalPosition: 'top',
+                panelClass: ['custom-red-style'],
+              }
+            );
+          }
+        }
+
+        )
+
+      }
+      else {
+        this.snackBar.open(
+          'Error occurred while trying to complete task. Try again !',
+          'Close',
+          {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['custom-red-style'],
+          }
+        );
+      }
+    });
+    
   }
 
   openCreatePlantComponent() {
@@ -227,7 +311,7 @@ export class DashboardHomeComponent implements OnInit {
   };
 
   openCreateTaskComponent() {
-    this.dialog.open(CreateTaskComponent, {
+    const dialogRef = this.dialog.open(CreateTaskComponent, {
       // data: row,
       height: '90%',
       minHeight: '450px',
@@ -236,6 +320,9 @@ export class DashboardHomeComponent implements OnInit {
       data: 'create-task',
       panelClass: 'custom-dialog-container',
       // minHeight: '180px',
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      this.getAllTasks();
     });
   };
 
@@ -296,6 +383,32 @@ export class DashboardHomeComponent implements OnInit {
       }
       else if (temp > max){
         const difference = temp - max;
+        if (difference >= 10) return 'VH';
+        else return 'H';
+      }
+    }
+    return '';
+
+  }
+
+  verifyMoistureRange() : string {
+    const max = this.selectedPlant.minSoilMoisture;
+    const min = this.selectedPlant.maxSoilMoisture;
+    if(min=== -100 || max === -100) return '';
+    // console.log("Min : ",min);
+    // console.log("Max : ",max);
+
+
+    if(this.backendData.moisture !== null){
+      const moisture = this.backendData.moisture;
+      if(moisture >= min && moisture<= max) return 'N'
+      else if (moisture < min){
+        const difference = min - moisture;
+        if (difference >= 10) return 'VL';
+        else return 'L';
+      }
+      else if (moisture > max){
+        const difference = moisture - max;
         if (difference >= 10) return 'VH';
         else return 'H';
       }
@@ -380,7 +493,39 @@ export class DashboardHomeComponent implements OnInit {
 
   }
 
-  onDelete(plantName : string) : void {
+  onDeleteTask(task_id : number) : void {
+    this.taskService.deleteTask(task_id).subscribe( response => {
+      if (response.message){
+        this.snackBar.open(
+          'Task successfully deleted.',
+          'Close',
+          {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['custom-style'],
+          }
+        );
+        this.getAllTasks();
+      }
+      else {
+        this.snackBar.open(
+          'Error occurred while trying to delete task. Try again !',
+          'Close',
+          {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['custom-red-style'],
+          }
+        );
+      }
+    }
+
+    )
+  }
+
+  onDeletePlant(plantName : string) : void {
 
     const deleteDialog = this.dialog.open(ConfirmDialogueComponent, {
       width: '500px',

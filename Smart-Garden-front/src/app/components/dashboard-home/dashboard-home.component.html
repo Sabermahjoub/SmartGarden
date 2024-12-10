@@ -30,7 +30,7 @@
                         <mat-card-header class="flex justify-center w-full">
                             <mat-card-title class="flex">
                                 <span class="text-black flex justify-center items-center font-thin">{{plant.plant_name}}
-                                    <mat-icon (click)="onDelete(plant.plant_name)" class="text-red-500 text-bg cursor-pointer hover:text-red-700">
+                                    <mat-icon (click)="onDeletePlant(plant.plant_name)" class="text-red-500 text-bg cursor-pointer hover:text-red-700">
                                         delete
                                     </mat-icon>
                                 </span>
@@ -205,7 +205,8 @@
                                 <mat-spinner color="accent" diameter="50"></mat-spinner>
                             </div>
                             <span *ngIf="backendData.humidity !== null" class="text-7xl"><b>{{backendData.humidity}}</b>
-                                <span [ngClass]="{'text-red-600' : verifyHumidityRange() === 'VH' || verifyHumidityRange() === 'VL' , 'text-lime-500' : verifyHumidityRange() !== 'VH' && verifyHumidityRange() !== 'VL'}">%</span></span>
+                                <span [ngClass]="{'text-red-600' : verifyHumidityRange() === 'VH' || verifyHumidityRange() === 'VL' , 'text-lime-500' : verifyHumidityRange() !== 'VH' && verifyHumidityRange() !== 'VL'}">%</span>
+                            </span>
                         </div>
 
                         <div *ngIf="verifyHumidityRange() !== ''" class="h-[20%] w-full">
@@ -361,8 +362,36 @@
 
                         <div class="h-[50%] w-full p-2 flex justify-center items-center">
                             <!-- <span><span class="text-7xl"><b>13</b></span><span class="text-lime-500 text-4xl">%</span></span> -->
-                            <span  class="text-7xl"><b>{{backendData.moisture}}</b></span>
+                            <span *ngIf="backendData.moisture !== null" class="text-7xl"><b>{{backendData.moisture}}</b>
+                                <span [ngClass]="{'text-red-600' : verifyMoistureRange() === 'VH' || verifyMoistureRange() === 'VL' , 'text-lime-500' : verifyMoistureRange() !== 'VH' && verifyMoistureRange() !== 'VL'}">%</span>
+                            </span>
+                        </div>
 
+                        <div *ngIf="verifyMoistureRange() !== ''" class="h-[20%] w-full">
+                            <div *ngIf="verifyMoistureRange() === 'N'" class="flex font-bold w-full text-sm justify-center items-center text-lime-500 ">
+                                <span class="material-symbols-outlined">
+                                    verified_user
+                                </span>
+                                <span>Normal moisture range</span>
+                            </div>
+                            <div *ngIf="verifyMoistureRange() === 'VH'" class=" w-full flex font-bold justify-center items-center text-red-600 ">
+                                <span class="material-symbols-outlined">
+                                    error
+                                </span>
+                                <span>moisture is very high</span>
+                            </div>
+                            <div *ngIf="verifyMoistureRange() === 'VL'" class="w-full flex font-bold justify-center items-center text-red-600 ">
+                                <span class="material-symbols-outlined">
+                                    error
+                                </span>
+                                <span>Moisture is very low</span>
+                            </div>
+                            <div *ngIf="verifyMoistureRange() === 'L' || verifyMoistureRange() === 'H'" class="w-full font-bold flex text-sm justify-center items-center text-orange-600 ">
+                                <span class="material-symbols-outlined">
+                                    report
+                                </span>
+                                <span class="w-full">Moisture slightly out of range</span>
+                            </div>
                         </div>
                     </div>
 
@@ -441,10 +470,10 @@
 
                 </div>
                 
-                <div class="h-[20%] w-full">
+                <div *ngIf="allTasks.length !== 0" class="h-[20%] w-full">
                     <mat-progress-bar class="custom-progress-bar" mode="determinate" [value]="getPercentageOfDoneTasks()"></mat-progress-bar>
                 </div>
-                <div class="h-[5%] w-full flex">
+                <div *ngIf="allTasks.length !== 0" class="h-[5%] w-full flex">
                     <span class="text-black"><b>{{getPercentageOfDoneTasks()}}%</b></span>
                     <div class="flex-grow"></div>
                     <span class="text-black"><b>{{getAllDoneTasks()}}/{{getTasksLength()}}</b> Tasks Completed</span>
@@ -452,30 +481,38 @@
 
             </div>
 
-            <!-- Container of all tasks -->
-            <div class="w-full p-2 gap-2 h-[75%] flex flex-col overflow-y-auto scrollbar-color">
+            <div class="w-full rounded-md bg-customGrey p-2 gap-2 h-[40%] flex flex-col justify-center items-center" *ngIf="allTasks.length === 0">
+                <span class="text-3xl  font-mono text-lightGreen">No tasks are available</span>
+            </div>
 
-                <mat-card *ngFor="let task of tasks" class="bg-white w-full h-auto max-h-[55%] flex flex-col items-center justify-center">
+            <!-- Container of all tasks -->
+            <div *ngIf="allTasks.length !== 0" class="w-full p-2 gap-2 h-[75%] flex flex-col overflow-y-auto scrollbar-color">
+
+                <mat-card *ngFor="let task of allTasks" class="bg-white w-full h-auto max-h-[55%] flex flex-col items-center justify-center">
                     <mat-card-header class="!w-full h-[40%] !p-0 flex ">
                         <div class=" flex !w-full !h-full !p-0">
                             <div class="flex w-full p-0">
                                 <div class="p-0 -ml-8">
                                     <span class="text-neutral-700 text-xl p-0 font-bold">
-                                        {{ task.name }}
+                                        {{ task.task_name }}
                                     </span>
 
                                 </div>
                                 <div class="flex-grow"></div>
-                                <div class="p-0">
+                                <div class="flex p-0">
+                                    <mat-icon *ngIf="task.done" (click)="onDeleteTask(task.task_id)" class="text-red-500 text-bg cursor-pointer hover:text-red-700">
+                                        delete
+                                    </mat-icon>
                                     <button 
                                         [ngClass]="{'cursor-default': task.done, 'cursor-pointer' : !task.done}" 
                                         class="circle p-0" 
                                         [class.checked]="task.done" 
                                         [disabled]="task.done" 
-                                        (click)="completeTask(task)">
+                                        (click)="completeTask(task.task_id)">
                                         <span *ngIf="task.done" class="material-icons">check</span>
                                     </button>
                                 </div>
+                                
                             </div>
                         </div>
                     </mat-card-header>
@@ -485,10 +522,14 @@
                         <span class="flex gap-1">
                             <p class="text-neutral-600 flex gap-2 justify-center items-center font-thin">
                                 {{ task.starting_time }} - {{task.ending_time}}
-                                <mat-icon *ngIf="isTimeEarlier(task.starting_time)" matTooltip="This task is behind schedule." matTooltipPosition="right" class="text-orange-400 cursor-pointer">error</mat-icon>
+                                <mat-icon *ngIf="isTimeEarlier(task.starting_time) && task.starting_time !== '' && task.ending_time !== ''" matTooltip="This task is behind schedule." matTooltipPosition="right" class="text-orange-400 cursor-pointer">error</mat-icon>
                             </p>
-                        </span>
-                            
+                            <div class="flex-grow"></div>
+                            <div>
+                                <span class="text-lime-600 font-mono text-base">{{task.plant}}</span>
+    
+                            </div>
+                        </span>                        
                     </div>
 
                 </mat-card>
