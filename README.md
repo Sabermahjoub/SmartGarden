@@ -75,10 +75,10 @@ This project is an IoT-based system that integrates real-time sensor data, machi
 ---
 
 When a moderate risk of storm is predicted : 
-![screenshot](Demo_images/Moderate_Storm_Risk.png)
+![screenshot](Demo_images/Moderate_Storm_Risk.PNG)
 
 When a moderate risk of storm is predicted : 
-![screenshot](Demo_images/High_Storm_Risk.png)
+![screenshot](Demo_images/High_Storm_Risk.PNG)
 
 ## Architecture
 ```
