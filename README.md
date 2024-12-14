@@ -2,6 +2,12 @@
 
 See the app demo ? Consult this link : https://drive.google.com/file/d/1Utyq1ixwL_11p-BXn7cv6J7kePKY8KZW/view?usp=drive_link
 
+Note : To be able to to extract : wind speed, lowest and highest temperature of the day, UV index, you should create an account at :  # weather.visualcrossing.com
+And use your own key : 
+```bash
+private weatherUrl = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/YOURCITY?key=YOURKEY";
+```
+
 ## Table of Contents
 1. [Project Overview](#project-overview)
 2. [Technology Stack](#technology-stack)
