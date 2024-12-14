@@ -1,4 +1,6 @@
-# IoT Project with Angular 13, Flask, MQTT, and ML/DL Algorithms
+# ✨ IoT Project with Angular 13, Flask, MQTT, and ML/DL Algorithms
+
+See the app demo ? Consult this link : https://drive.google.com/file/d/1Utyq1ixwL_11p-BXn7cv6J7kePKY8KZW/view?usp=drive_link
 
 ## Table of Contents
 1. [Project Overview](#project-overview)
@@ -25,6 +27,16 @@ This project is an IoT-based system that integrates real-time sensor data, machi
 - Efficient communication using MQTT.
 - Backend support for data processing and machine learning.
 - Web-based interface for data interaction and insights visualization.
+
+---
+
+### Key App functionalities
+- Get sensors and external api data and inform farmer of the potential risks for the plant.
+- Managing list of plants.
+- Managing daily tasks.
+- Inform farmer of possible storm for the next hour to come.
+- Managing logs.
+- Predicting health of plant.
 
 ---
 
@@ -158,6 +170,11 @@ SmartGarden/
 
 ## MQTT Configuration
 - **Broker URL**: `mqtt://localhost` (or your MQTT server address)
+## Dependencies
+Flask and MQTT library for connecting with the broker and subscribing to messages
+```bash
+   pip install Flask paho-mqtt
+```
 
 Example MQTT Message Format:
 ```json
@@ -213,30 +230,3 @@ Contributions are welcome! Follow these steps:
 ## License
 This project is licensed under the MIT License. See the LICENSE file for more details.
 
-
-
-# ✨ Simple Flask API with MQTT Integration
-
-This repository contains a very simple Flask API that integrates with an MQTT broker to receive and return data in JSON format.
-
-## Dependencies
-Flask and MQTT library for connecting with the broker and subscribing to messages
-```bash
-   pip install Flask paho-mqtt
-```
-## Running 
-Run the application
-```
-python app.py
-```
-Example : using the ```hello``` endpoint 
-Returns JSON data received from an MQTT topic ```climat```
-```
-curl localhost:5000/hello
-```
-## Output
-```
-{
-  "data": "{\"humidity\": 90.5, \"temp\": 45.8}"
-}
-```
