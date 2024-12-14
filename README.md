@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/73c63d12-28d0-4c3a-81bb-aab8d4a9966b)# ✨ IoT Project with Angular 13, Flask, MQTT, and ML/DL Algorithms
+# ✨ IoT Project with Angular 13, Flask, MQTT, and ML/DL Algorithms
 
 See the app demo ? Consult this link : https://drive.google.com/file/d/1Utyq1ixwL_11p-BXn7cv6J7kePKY8KZW/view?usp=drive_link
 
@@ -68,6 +68,10 @@ This project is an IoT-based system that integrates real-time sensor data, machi
 
 ---
 
+When a moderate risk of storm is predicted : 
+![screenshot](DL_images_test/test1.JPG)
+
+When a moderate risk of storm is predicted : 
 ![screenshot](DL_images_test/test1.JPG)
 
 ## Architecture
