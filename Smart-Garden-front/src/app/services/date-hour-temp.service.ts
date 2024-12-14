@@ -10,7 +10,7 @@ import { WeatherApiData, backendData, fahrenheitToCelsius, convertMphToKmph, det
 export class DateHourTempService {
 
   //private apiUrl = 'http://api.timezonedb.com/v2.1/list-time-zone?key=5TFD9L5CIQR8&format=xml&country=TN';
-  private weatherUrl = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Tunis?key=6N7KTZVR8JH3UUGBKTBBY45FG";
+  private weatherUrl = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/YOURCITY?key=YOURKEY";
   private dataApiUrl = "http://127.0.0.1:5000/getData";
 
   incrementHour(time: string): string {
