@@ -8,6 +8,10 @@ And use your own key :
 private weatherUrl = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/YOURCITY?key=YOURKEY";
 ```
 
+Hardware setup :
+
+![screenshot](Demo_images/hardware_setup.jpg)
+
 ## Table of Contents
 1. [Project Overview](#project-overview)
 2. [Technology Stack](#technology-stack)
