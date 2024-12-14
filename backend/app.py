@@ -153,15 +153,6 @@ def predict_DL():
         # Get the predicted class label
         predicted_label = class_names[np.argmax(batch_prediction[0])]
 
-        if(image_name == "test1.JPG" or image_name == "test2.JPG") :
-            predicted_label="healthy"
-        
-        if(image_name == "test3.JPG" or image_name == "test4.JPG" or image_name == "test5.JPG") :
-            predicted_label="Early_blight"
-        
-        if(image_name == "test6.JPG" or image_name == "test7.JPG" or image_name == "test8.JPG") :
-            predicted_label="Late_blight"
-        print(predicted_label)
         return jsonify({"predicted_label": predicted_label}), 200
 
     except Exception as e:
